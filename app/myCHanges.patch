@@ -1,0 +1,3066 @@
+diff --git a/.idea/caches/build_file_checksums.ser b/.idea/caches/build_file_checksums.ser
+index 4d1beea..5814f6a 100644
+Binary files a/.idea/caches/build_file_checksums.ser and b/.idea/caches/build_file_checksums.ser differ
+diff --git a/app/build.gradle b/app/build.gradle
+index d93f2eb..138b4fd 100644
+--- a/app/build.gradle
++++ b/app/build.gradle
+@@ -51,7 +51,7 @@ dependencies {
+     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+     //noinspection GradleCompatible
+     implementation 'com.android.support:design:27.+'
+-    implementation 'com.android.support:support-v4:27+'
++    // implementation 'com.android.support:support-v4:27+'
+ //    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+     //noinspection GradleCompatible
+     implementation 'com.android.support:cardview-v7:26.+'
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+index 94141d9..fcd295d 100644
+--- a/app/src/main/AndroidManifest.xml
++++ b/app/src/main/AndroidManifest.xml
+@@ -12,7 +12,6 @@
+         android:roundIcon="@mipmap/ic_launcher_round"
+         android:supportsRtl="true"
+         android:theme="@style/AppTheme">
+-        <activity android:name=".MainActivity" />
+         <activity android:name=".SplashActivity">
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+@@ -24,6 +23,7 @@
+         <activity
+             android:name=".activity.home.HomeActivity"
+             android:theme="@style/AppTheme.NoActionBar" />
++        <activity android:name=".MainActivity" />
+         <activity android:name=".activity.register.SignUpActivity" />
+         <activity android:name=".BabyCareActivity" />
+         <activity android:name=".activity.product.ProductListActivity" />
+@@ -47,8 +47,9 @@
+         <activity android:name=".activity.register.Forgot_password" />
+         <activity android:name=".activity.register.Validate_otp" />
+         <activity android:name=".activity.register.Resetpassword" />
+-       <!-- <activity android:name=".activity.register.Passwordreset" />-->
+-        <activity android:name=".activity.register.Passwordreset_splash"></activity>
++        <!-- <activity android:name=".activity.register.Passwordreset" /> -->
++        <activity android:name=".activity.register.Passwordreset_splash" />
++        <activity android:name=".PlaceOrderSuccessful"></activity>
+     </application>
+ 
+ </manifest>
+\ No newline at end of file
+diff --git a/app/src/main/java/kite/amibee/com/netstore/BabyCareActivity.java b/app/src/main/java/kite/amibee/com/netstore/BabyCareActivity.java
+index df9b7ea..aa7a1f7 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/BabyCareActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/BabyCareActivity.java
+@@ -20,6 +20,7 @@ import java.util.List;
+ import java.util.Timer;
+ import java.util.TimerTask;
+ 
++import kite.amibee.com.netstore.activity.addToCart.MyCartActivity;
+ import kite.amibee.com.netstore.activity.product.ProductListActivity;
+ import kite.amibee.com.netstore.adapter.BabyCareCategoryAdapter;
+ import kite.amibee.com.netstore.adapter.BabyCareOffersAdapter;
+@@ -78,12 +79,24 @@ public class BabyCareActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_baby_care);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ //        carosalInit();
+         intent = getIntent();
+         uiInit();
++
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(BabyCareActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
++
+     }
+ 
+     public void uiInit(){
+diff --git a/app/src/main/java/kite/amibee/com/netstore/Main2Activity.java b/app/src/main/java/kite/amibee/com/netstore/Main2Activity.java
+index 701936d..5e4c2e7 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/Main2Activity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/Main2Activity.java
+@@ -1,5 +1,6 @@
+ package kite.amibee.com.netstore;
+ 
++import android.content.Intent;
+ import android.os.Bundle;
+ import android.support.design.widget.FloatingActionButton;
+ import android.support.design.widget.Snackbar;
+@@ -15,6 +16,8 @@ import android.view.MenuItem;
+ import android.view.WindowManager;
+ import android.widget.ImageView;
+ 
++import kite.amibee.com.netstore.activity.addToCart.MyCartActivity;
++
+ public class Main2Activity extends AppCompatActivity
+         implements NavigationView.OnNavigationItemSelectedListener {
+     ImageView toolbar_menu;
+@@ -23,7 +26,7 @@ public class Main2Activity extends AppCompatActivity
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_main2);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+         toolbar_menu=(ImageView)findViewById(R.id.toolbar_menu);
+@@ -48,6 +51,17 @@ public class Main2Activity extends AppCompatActivity
+                 drawer.openDrawer(GravityCompat.START);
+             }
+         });
++
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(Main2Activity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
+     }
+ 
+     @Override
+diff --git a/app/src/main/java/kite/amibee/com/netstore/MultiViewActivity.java b/app/src/main/java/kite/amibee/com/netstore/MultiViewActivity.java
+index 94ed4ef..821bd8d 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/MultiViewActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/MultiViewActivity.java
+@@ -1,5 +1,6 @@
+ package kite.amibee.com.netstore;
+ 
++import android.content.Intent;
+ import android.graphics.drawable.Drawable;
+ import android.support.v4.content.ContextCompat;
+ import android.support.v7.app.AppCompatActivity;
+@@ -16,6 +17,7 @@ import android.widget.TextView;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
++import kite.amibee.com.netstore.activity.addToCart.MyCartActivity;
+ import kite.amibee.com.netstore.adapter.MultiViewAdapter;
+ import kite.amibee.com.netstore.model.MultiViewModel;
+ import kite.amibee.com.netstore.model.MyCartModel;
+@@ -34,10 +36,22 @@ public class MultiViewActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_multi_view);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+         init();
++
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(MultiViewActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
++
+     }
+ 
+     public void init(){
+diff --git a/app/src/main/java/kite/amibee/com/netstore/MyAccountActivity.java b/app/src/main/java/kite/amibee/com/netstore/MyAccountActivity.java
+index e0e290e..0d0446c 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/MyAccountActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/MyAccountActivity.java
+@@ -1,5 +1,6 @@
+ package kite.amibee.com.netstore;
+ 
++import android.content.Intent;
+ import android.support.v7.app.AppCompatActivity;
+ import android.os.Bundle;
+ import android.view.View;
+@@ -8,6 +9,8 @@ import android.widget.ImageView;
+ import android.widget.RelativeLayout;
+ import android.widget.TextView;
+ 
++import kite.amibee.com.netstore.activity.addToCart.MyCartActivity;
++
+ public class MyAccountActivity extends AppCompatActivity {
+     /*toolbar*/
+     ImageView toolbar_menu_iv,toolbar_logo_iv,toolbar_back_iv,toolbar_cart_iv;
+@@ -19,10 +22,22 @@ public class MyAccountActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_my_account);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+         init();
++
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(MyAccountActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
++
+     }
+ 
+     public void init(){
+diff --git a/app/src/main/java/kite/amibee/com/netstore/MyWishListActivity.java b/app/src/main/java/kite/amibee/com/netstore/MyWishListActivity.java
+index 8135c0a..317f868 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/MyWishListActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/MyWishListActivity.java
+@@ -38,10 +38,22 @@ public class MyWishListActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_my_wish_list);
+-        getSupportActionBar().hide();
++       // getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+         init();
++
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(MyWishListActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
++
+     }
+ 
+     public void init(){
+diff --git a/app/src/main/java/kite/amibee/com/netstore/PaymentActivity.java b/app/src/main/java/kite/amibee/com/netstore/PaymentActivity.java
+index 042b3ac..b670de7 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/PaymentActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/PaymentActivity.java
+@@ -1,5 +1,6 @@
+ package kite.amibee.com.netstore;
+ 
++import android.content.Intent;
+ import android.support.v7.app.AppCompatActivity;
+ import android.os.Bundle;
+ import android.support.v7.widget.SearchView;
+@@ -10,6 +11,8 @@ import android.widget.ImageView;
+ import android.widget.RelativeLayout;
+ import android.widget.TextView;
+ 
++import kite.amibee.com.netstore.activity.addToCart.MyCartActivity;
++
+ public class PaymentActivity extends AppCompatActivity {
+     private static final String TAG = "PaymentActivity";
+     /*toolbar*/
+@@ -22,10 +25,22 @@ public class PaymentActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_payment);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+         init();
++
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(PaymentActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
++
+     }
+     public void init(){
+         //toolbar
+diff --git a/app/src/main/java/kite/amibee/com/netstore/SelectAddressActivity.java b/app/src/main/java/kite/amibee/com/netstore/SelectAddressActivity.java
+index 414439c..f2ea9a4 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/SelectAddressActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/SelectAddressActivity.java
+@@ -29,6 +29,7 @@ import java.util.ArrayList;
+ import java.util.Arrays;
+ import java.util.List;
+ 
++import kite.amibee.com.netstore.activity.addToCart.MyCartActivity;
+ import kite.amibee.com.netstore.adapter.AddressSelectAdapter;
+ import kite.amibee.com.netstore.model.AddressSelectModel;
+ import kite.amibee.com.netstore.model.pojo.AddressListModel;
+@@ -71,10 +72,22 @@ public class SelectAddressActivity extends AppCompatActivity implements AdapterV
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_select_address);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+         init();
++
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(SelectAddressActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
++
+     }
+     public void init(){
+         preferencesHelper= new PreferencesHelper(this);
+diff --git a/app/src/main/java/kite/amibee/com/netstore/SplashActivity.java b/app/src/main/java/kite/amibee/com/netstore/SplashActivity.java
+index 4cdbd30..199e60d 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/SplashActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/SplashActivity.java
+@@ -19,7 +19,7 @@ public class SplashActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_splash);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ 
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/addToCart/MyCartActivity.java b/app/src/main/java/kite/amibee/com/netstore/activity/addToCart/MyCartActivity.java
+index 312ac08..4b35691 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/addToCart/MyCartActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/addToCart/MyCartActivity.java
+@@ -37,7 +37,7 @@ public class MyCartActivity extends AppCompatActivity {
+     ArrayList<AddToCartList> cart_list = new ArrayList<>();
+     /*toolbar*/
+     ImageView toolbar_menu_iv, toolbar_logo_iv, toolbar_back_iv, toolbar_cart_iv;
+-    TextView toolbar_tv_title,toolbar_cart_no_tv;
++    TextView toolbar_tv_title, toolbar_cart_no_tv;
+     RelativeLayout toolbar_lay_cart;
+ 
+     //toolbar
+@@ -45,7 +45,6 @@ public class MyCartActivity extends AppCompatActivity {
+     RelativeLayout lay_bot_1, lay_checkOut;
+     Api api;
+     PreferencesHelper preferencesHelper;
+-    private View.OnClickListener onClickListener;
+     int customerId;
+     int productId;
+     String quantity;
+@@ -54,14 +53,16 @@ public class MyCartActivity extends AppCompatActivity {
+     int quoteId;
+     String cartStatus;
+     AddressModel quoteAddress = new AddressModel();
+-    HashMap<Integer,Integer> cartValue= new HashMap<>();
++    HashMap<Integer, Integer> cartValue = new HashMap<>();
+     MyApp myApp;
+     JsonObject jsonObject = new JsonObject();
++    private View.OnClickListener onClickListener;
++
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_my_cart);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ 
+@@ -71,41 +72,41 @@ public class MyCartActivity extends AppCompatActivity {
+ 
+     public void init() {
+         preferencesHelper = new PreferencesHelper(this);
+-        myApp=(MyApp)getApplicationContext();
++        myApp = (MyApp) getApplicationContext();
+         api = new Api(this, "");
+-        customerId=preferencesHelper.getCusId();
+-        quoteId=preferencesHelper.getQuoteId();
+-        addressId=preferencesHelper.getAddressId();
+-        websiteId=preferencesHelper.getWebsiteId();
+-        if (getIntent().getExtras()==null){
+-            Log.d(TAG, "init: quoteId "+quoteId);
+-            if (quoteId > 0){
++        customerId = preferencesHelper.getCusId();
++        quoteId = preferencesHelper.getQuoteId();
++        addressId = preferencesHelper.getAddressId();
++        websiteId = preferencesHelper.getWebsiteId();
++        if (getIntent().getExtras() == null) {
++            Log.d(TAG, "init: quoteId " + quoteId);
++            if (quoteId > 0) {
+                 api.cartAll(quoteId);
+             }
+ 
+-        }else {
++        } else {
+             Log.d(TAG, "init: intent else ");
+-            cartStatus=getIntent().getStringExtra("cartStatus");
+-            productId=getIntent().getIntExtra("productId",0);
+-            quantity=getIntent().getStringExtra("quantity");
+-            Log.w(TAG, "init: cartStatus "+cartStatus );
+-            Log.w(TAG, "onCreate: customerId "+customerId+"\n" +" productId "+productId+"\n" +" quantity "+quantity +"\n"+" websiteId "+websiteId );
++            cartStatus = getIntent().getStringExtra("cartStatus");
++            productId = getIntent().getIntExtra("productId", 0);
++            quantity = getIntent().getStringExtra("quantity");
++            Log.w(TAG, "init: cartStatus " + cartStatus);
++            Log.w(TAG, "onCreate: customerId " + customerId + "\n" + " productId " + productId + "\n" + " quantity " + quantity + "\n" + " websiteId " + websiteId);
+ 
+             jsonObject.addProperty("customerId", customerId);
+             jsonObject.addProperty("productId", productId);
+             jsonObject.addProperty("quantity", quantity);
+             jsonObject.addProperty("websiteId", websiteId);
+-            if (cartStatus.equals("AddNew")){
+-                if(quoteId > 0){
++            if (cartStatus.equals("AddNew")) {
++                if (quoteId > 0) {
+ 
+-                }else {
++                } else {
+                     jsonObject.addProperty("addressId", addressId);
+                 }
+ 
+-                Log.w(TAG, "init: cart addnew jsonObject "+jsonObject );
++                Log.w(TAG, "init: cart addnew jsonObject " + jsonObject);
+                 api.addToCart(jsonObject);
+-            }else {
+-                Log.w(TAG, "init: cart cartUpdateOrReplace jsonObject "+jsonObject );
++            } else {
++                Log.w(TAG, "init: cart cartUpdateOrReplace jsonObject " + jsonObject);
+                 api.cartUpdateOrReplace(jsonObject);
+ 
+             }
+@@ -119,7 +120,7 @@ public class MyCartActivity extends AppCompatActivity {
+         toolbar_logo_iv = (ImageView) findViewById(R.id.toolbar_logo);
+         toolbar_back_iv = (ImageView) findViewById(R.id.toolbar_back);
+         toolbar_tv_title = (TextView) findViewById(R.id.toolbar_tv_title);
+-        toolbar_cart_no_tv=findViewById(R.id.toolbar_cart_no_tv);
++        toolbar_cart_no_tv = findViewById(R.id.toolbar_cart_no_tv);
+         toolbar_tv_title.setText("My Cart");
+         toolbar_menu_iv.setVisibility(View.GONE);
+         toolbar_logo_iv.setVisibility(View.GONE);
+@@ -157,40 +158,40 @@ public class MyCartActivity extends AppCompatActivity {
+ 
+     public void apiResponse(AddToCartDetailModel addToCartDetailModel) {
+         cart_list = addToCartDetailModel.getQuoteOrderItems();
+-        try{
+-            if (cart_list!=null){
+-                Log.w(TAG, "apiResponse: cart_list "+cart_list.size());
++        try {
++            if (cart_list != null) {
++                Log.w(TAG, "apiResponse: cart_list " + cart_list.size());
+                 myCartAdapter.updateAdapter(cart_list);
+-                if (cart_list.size() >0){
+-                    for (int i=0;i<cart_list.size();i++){
+-                        int productId= Integer.parseInt(cart_list.get(i).getProductId());
+-                        int quantity= Integer.parseInt(cart_list.get(i).getQuantity());
+-                        cartValue.put(productId,quantity);
++                if (cart_list.size() > 0) {
++                    for (int i = 0; i < cart_list.size(); i++) {
++                        int productId = Integer.parseInt(cart_list.get(i).getProductId());
++                        int quantity = Integer.parseInt(cart_list.get(i).getQuantity());
++                        cartValue.put(productId, quantity);
+                     }
+                     myApp.setCartValue(cartValue);
+-                }else {
++                } else {
+                     //no cart item
+-                    cartValue.put(0,0);
++                    cartValue.put(0, 0);
+                     myApp.setCartValue(cartValue);
+                 }
+ 
+ 
+-                Log.w(TAG, "apiResponse: myapp cartValue size "+myApp.getCartValue().size() );
++                Log.w(TAG, "apiResponse: myapp cartValue size " + myApp.getCartValue().size());
+ 
+ 
+-                String subTotal = addToCartDetailModel.getSubTotal();
++                String subTotal = "" + addToCartDetailModel.getSubTotal();
+                 Log.d(TAG, "apiResponse: subTotal " + subTotal);
+                 tv_cart_subTotal.setText("" + subTotal);
+                 int cartCount = addToCartDetailModel.getTotalItems();
+-                int quoteId=addToCartDetailModel.getId();
+-                Log.d(TAG, "apiResponse: cartCount "+cartCount);
+-                Log.d(TAG, "apiResponse: quoteId "+quoteId);
++                int quoteId = addToCartDetailModel.getId();
++                Log.d(TAG, "apiResponse: cartCount " + cartCount);
++                Log.d(TAG, "apiResponse: quoteId " + quoteId);
+                 preferencesHelper.setCartCount(cartCount);
+                 preferencesHelper.setQuoteId(quoteId);
+-                int cartPref=preferencesHelper.getCartCount();
+-                Log.d(TAG, "apiResponse: cartPref "+cartPref);
++                int cartPref = preferencesHelper.getCartCount();
++                Log.d(TAG, "apiResponse: cartPref " + cartPref);
+                 tv_total_count.setText("Price (" + cartCount + " items)");
+-                toolbar_cart_no_tv.setText(""+cartCount);
++                toolbar_cart_no_tv.setText("" + cartCount);
+ 
+                 /*quoteAddress=addToCartDetailModel.getQuoteAddress();
+                 if (quoteAddress!=null){
+@@ -198,12 +199,11 @@ public class MyCartActivity extends AppCompatActivity {
+                 }*/
+             }
+ 
+-        }catch (Exception e){
+-            Log.e(TAG, "apiResponse: cart exception "+e );
++        } catch (Exception e) {
++            Log.e(TAG, "apiResponse: cart exception " + e);
+         }
+ 
+ 
+-
+     }
+ 
+     private void onClick1() {
+@@ -223,7 +223,7 @@ public class MyCartActivity extends AppCompatActivity {
+             public void onClick(View view) {
+                 if (lay_checkOut.hashCode() == view.hashCode()) {
+ 
+-                    Log.e(TAG, "onClick: customerId "+customerId +" productId "+productId +" quantity "+quantity +" websiteId "+websiteId);
++                    Log.e(TAG, "onClick: customerId " + customerId + " productId " + productId + " quantity " + quantity + " websiteId " + websiteId);
+                     Intent intent = new Intent(MyCartActivity.this, DeliveryActivity.class);
+ //                    intent.putExtra("quoteAddress", (Serializable) quoteAddress);
+                     startActivity(intent);
+@@ -232,18 +232,18 @@ public class MyCartActivity extends AppCompatActivity {
+         };
+     }
+ 
+-    public void cartDelete(String productId,String quantity){
+-        quoteId=preferencesHelper.getQuoteId();
+-        Log.d(TAG, "cartDelete: productId "+productId +" quantity "+quantity);
+-        Log.d(TAG, "cartDelete: customerId "+customerId +" websiteId "+websiteId);
+-        Log.d(TAG, "cartDelete: quoteId "+quoteId);
++    public void cartDelete(String productId, String quantity) {
++        quoteId = preferencesHelper.getQuoteId();
++        Log.d(TAG, "cartDelete: productId " + productId + " quantity " + quantity);
++        Log.d(TAG, "cartDelete: customerId " + customerId + " websiteId " + websiteId);
++        Log.d(TAG, "cartDelete: quoteId " + quoteId);
+         JsonObject jsonObject = new JsonObject();
+         jsonObject.addProperty("quoteId", quoteId);
+         jsonObject.addProperty("customerId", customerId);
+         jsonObject.addProperty("productId", productId);
+         jsonObject.addProperty("quantity", 0);
+         jsonObject.addProperty("websiteId", websiteId);
+-        Log.w(TAG, "cartDelete: jsonObject "+jsonObject );
++        Log.w(TAG, "cartDelete: jsonObject " + jsonObject);
+         api.cartDelete(jsonObject);
+     }
+ }
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/category/ShopByCateActivity.java b/app/src/main/java/kite/amibee/com/netstore/activity/category/ShopByCateActivity.java
+index 528ed3e..4999dc5 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/category/ShopByCateActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/category/ShopByCateActivity.java
+@@ -46,7 +46,7 @@ public class ShopByCateActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_shop_by_cate);
+-        getSupportActionBar().hide();
++       // getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+         init();
+@@ -79,6 +79,17 @@ public class ShopByCateActivity extends AppCompatActivity {
+         toolbar_lay_cart.setVisibility(View.VISIBLE);
+         home_search_view.setVisibility(View.VISIBLE);
+ 
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(ShopByCateActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
++
+         toolbar_back_iv.setOnClickListener(onClickListener);
+         home_search_view.setOnCloseListener(onCloseListener);
+         toolbar_cart_iv.setOnClickListener(onClickListener);
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/delivery/DeliveryActivity.java b/app/src/main/java/kite/amibee/com/netstore/activity/delivery/DeliveryActivity.java
+index 5035722..4d417b3 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/delivery/DeliveryActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/delivery/DeliveryActivity.java
+@@ -32,32 +32,33 @@ import kite.amibee.com.netstore.util.api.Api;
+ public class DeliveryActivity extends AppCompatActivity {
+     private static final String TAG = "DeliveryActivity";
+     /*toolbar*/
+-    ImageView toolbar_menu_iv,toolbar_logo_iv,toolbar_back_iv,toolbar_cart_iv;
+-    TextView toolbar_tv_title,delivery_price_tv_sub_tot_price,delivery_price_tv_tax_price,delivery_price_tv_shipping_price,
+-            delivery_price_tv_tot_price,delivery_price_tv_gtot_price;
+-    TextView tv_addess_name,tv_address_full_name;
++    ImageView toolbar_menu_iv, toolbar_logo_iv, toolbar_back_iv, toolbar_cart_iv;
++    TextView toolbar_tv_title, delivery_price_tv_sub_tot_price, delivery_price_tv_tax_price, delivery_price_tv_shipping_price,
++            delivery_price_tv_tot_price, delivery_price_tv_gtot_price;
++    TextView tv_addess_name, tv_address_full_name;
+     RelativeLayout toolbar_lay_cart;
+     //toolbar
+     RecyclerView delivery_cart_rv;
+-    List<MyCartModel> offers_list=new ArrayList<>();
++    List<MyCartModel> offers_list = new ArrayList<>();
+     DeliveryCartAdapter deliveryCartAdapter;
+-    RelativeLayout deliver_lay_ch_addr,lay_bot_1;
++    RelativeLayout deliver_lay_ch_addr, lay_bot_1;
+     ArrayList<AddToCartList> cart_list = new ArrayList<>();
+     Api api;
+-    private View.OnClickListener onClickListener;
+     PreferencesHelper preferencesHelper;
+     AddressModel1 quoteAddress = new AddressModel1();
+     //
+-    String name="";
+-    String streetName="";
+-    String countryId="";
+-    String regId="";
+-    int quoteId=0;
++    String name = "";
++    String streetName = "";
++    String countryId = "";
++    String regId = "";
++    int quoteId = 0;
++    private View.OnClickListener onClickListener;
++
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_delivery);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ 
+@@ -65,29 +66,29 @@ public class DeliveryActivity extends AppCompatActivity {
+         init();
+     }
+ 
+-    public void init(){
++    public void init() {
+ //        quoteAddress = (AddressModel) getIntent().getSerializableExtra("quoteAddress");
+ 
+-        preferencesHelper= new PreferencesHelper(this);
+-        quoteId=preferencesHelper.getQuoteId();
+-        Log.e(TAG, "init: quoteId "+quoteId);
++        preferencesHelper = new PreferencesHelper(this);
++        quoteId = preferencesHelper.getQuoteId();
++        Log.e(TAG, "init: quoteId " + quoteId);
+         api = new Api(this, "");
+         api.cartAll(quoteId);
+         onClick();
+ 
+         //toolbar
+-        toolbar_menu_iv=(ImageView)findViewById(R.id.toolbar_menu);
+-        toolbar_logo_iv=(ImageView)findViewById(R.id.toolbar_logo);
+-        toolbar_back_iv=(ImageView)findViewById(R.id.toolbar_back);
+-        toolbar_tv_title=(TextView)findViewById(R.id.toolbar_tv_title);
+-        toolbar_cart_iv=(ImageView)findViewById(R.id.toolbar_cart);
++        toolbar_menu_iv = (ImageView) findViewById(R.id.toolbar_menu);
++        toolbar_logo_iv = (ImageView) findViewById(R.id.toolbar_logo);
++        toolbar_back_iv = (ImageView) findViewById(R.id.toolbar_back);
++        toolbar_tv_title = (TextView) findViewById(R.id.toolbar_tv_title);
++        toolbar_cart_iv = (ImageView) findViewById(R.id.toolbar_cart);
+         toolbar_cart_iv.setVisibility(View.GONE);
+         toolbar_tv_title.setText("Delivery");
+         toolbar_menu_iv.setVisibility(View.GONE);
+         toolbar_logo_iv.setVisibility(View.GONE);
+         toolbar_back_iv.setVisibility(View.VISIBLE);
+         toolbar_tv_title.setVisibility(View.VISIBLE);
+-        toolbar_lay_cart=(RelativeLayout)findViewById(R.id.toolbar_lay_cart);
++        toolbar_lay_cart = (RelativeLayout) findViewById(R.id.toolbar_lay_cart);
+         toolbar_lay_cart.setVisibility(View.GONE);
+ 
+ 
+@@ -98,33 +99,33 @@ public class DeliveryActivity extends AppCompatActivity {
+             }
+         });
+         //toolbar
+-        delivery_cart_rv=(RecyclerView)findViewById(R.id.delivery_cart_rv);
++        delivery_cart_rv = (RecyclerView) findViewById(R.id.delivery_cart_rv);
+         delivery_cart_rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+         delivery_cart_rv.setItemAnimator(new DefaultItemAnimator());
+-        delivery_cart_rv.addItemDecoration(new SpacesItemDecoration(0,0, 0, 0));
++        delivery_cart_rv.addItemDecoration(new SpacesItemDecoration(0, 0, 0, 0));
+         deliveryCartAdapter = new DeliveryCartAdapter(DeliveryActivity.this, cart_list);
+         delivery_cart_rv.setAdapter(deliveryCartAdapter);
+ 
+-        deliver_lay_ch_addr =(RelativeLayout)findViewById(R.id.deliver_lay_ch_addr);
++        deliver_lay_ch_addr = (RelativeLayout) findViewById(R.id.deliver_lay_ch_addr);
+         deliver_lay_ch_addr.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+-                Intent intent = new Intent(DeliveryActivity.this,SelectAddressActivity.class);
++                Intent intent = new Intent(DeliveryActivity.this, SelectAddressActivity.class);
+                 startActivity(intent);
+             }
+         });
+ 
+-        lay_bot_1=(RelativeLayout)findViewById(R.id.lay_bot_1);
++        lay_bot_1 = (RelativeLayout) findViewById(R.id.lay_bot_1);
+         lay_bot_1.setOnClickListener(onClickListener);
+ 
+-        delivery_price_tv_sub_tot_price=findViewById(R.id.delivery_price_tv_sub_tot_price);
+-        delivery_price_tv_tax_price=findViewById(R.id.delivery_price_tv_tax_price);
+-        delivery_price_tv_shipping_price=findViewById(R.id.delivery_price_tv_shipping_price);
+-        delivery_price_tv_tot_price=findViewById(R.id.delivery_price_tv_tot_price);
+-        delivery_price_tv_gtot_price=findViewById(R.id.delivery_price_tv_gtot_price);
++        delivery_price_tv_sub_tot_price = findViewById(R.id.delivery_price_tv_sub_tot_price);
++        delivery_price_tv_tax_price = findViewById(R.id.delivery_price_tv_tax_price);
++        delivery_price_tv_shipping_price = findViewById(R.id.delivery_price_tv_shipping_price);
++        delivery_price_tv_tot_price = findViewById(R.id.delivery_price_tv_tot_price);
++        delivery_price_tv_gtot_price = findViewById(R.id.delivery_price_tv_gtot_price);
+ 
+-        tv_address_full_name=findViewById(R.id.tv_address_full_name);
+-        tv_addess_name=findViewById(R.id.tv_addess_name);
++        tv_address_full_name = findViewById(R.id.tv_address_full_name);
++        tv_addess_name = findViewById(R.id.tv_addess_name);
+ 
+ 
+     }
+@@ -132,10 +133,10 @@ public class DeliveryActivity extends AppCompatActivity {
+     public void apiResponse(AddToCartDetailModel addToCartDetailModel) {
+         cart_list = addToCartDetailModel.getQuoteOrderItems();
+         deliveryCartAdapter.updateAdapter(cart_list);
+-        String subTotal = addToCartDetailModel.getSubTotal();
++        String subTotal = "" + addToCartDetailModel.getSubTotal();
+         String tax = addToCartDetailModel.getTaxAmount();
+         String shippingPrice = addToCartDetailModel.getShippingAmount();
+-        String totPrice = addToCartDetailModel.getSubTotal();
++        String totPrice = "" + addToCartDetailModel.getSubTotal();
+         String grandTotal = addToCartDetailModel.getGrandTotal();
+ 
+         delivery_price_tv_sub_tot_price.setText(subTotal);
+@@ -143,28 +144,28 @@ public class DeliveryActivity extends AppCompatActivity {
+         delivery_price_tv_shipping_price.setText(shippingPrice);
+         delivery_price_tv_tot_price.setText(totPrice);
+         delivery_price_tv_gtot_price.setText(grandTotal);
+-        quoteAddress=addToCartDetailModel.getQuoteAddress();
+-        if (quoteAddress!=null){
+-             name=quoteAddress.getFirstName();
+-             streetName=quoteAddress.getStreet();
+-             countryId = quoteAddress.getCountry();
+-             regId=quoteAddress.getRegion();
+-            Log.d(TAG, "init: name "+name +" streetName "+streetName +"countryId "+countryId );
+-        }else {
+-            Log.e(TAG, "apiResponse: quoteAddress "+quoteAddress );
++        quoteAddress = addToCartDetailModel.getQuoteAddress();
++        if (quoteAddress != null) {
++            name = quoteAddress.getFirstName();
++            streetName = quoteAddress.getStreet();
++            countryId = quoteAddress.getCountry();
++            regId = quoteAddress.getRegion();
++            Log.d(TAG, "init: name " + name + " streetName " + streetName + "countryId " + countryId);
++        } else {
++            Log.e(TAG, "apiResponse: quoteAddress " + quoteAddress);
+         }
+         tv_addess_name.setText(name);
+-        tv_address_full_name.setText(streetName +"\n"+countryId+"\n"+regId+"\n");
++        tv_address_full_name.setText(streetName + "\n" + countryId + "\n" + regId + "\n");
+ 
+ 
+     }
+ 
+ 
+-    public void onClick(){
+-         onClickListener = new View.OnClickListener() {
++    public void onClick() {
++        onClickListener = new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+-                Log.d(TAG, "onClick: placeoreder quoteId "+quoteId );
++                Log.d(TAG, "onClick: placeoreder quoteId " + quoteId);
+                 api.placeOrder(quoteId);
+ 
+ 
+@@ -172,12 +173,12 @@ public class DeliveryActivity extends AppCompatActivity {
+         };
+     }
+ 
+-    public void apiResponsePlaceOrder(PlaceOrderModel apiResponse){
+-        String status=apiResponse.getMessage();
+-        if (status.equals("SUCCESS")){
++    public void apiResponsePlaceOrder(PlaceOrderModel apiResponse) {
++        String status = apiResponse.getMessage();
++        if (status.equals("SUCCESS")) {
+             preferencesHelper.setQuoteId(0);
+             preferencesHelper.setCartCount(0);
+-            Intent intent= new Intent(DeliveryActivity.this,MyOrdersActivity.class);
++            Intent intent = new Intent(DeliveryActivity.this, MyOrdersActivity.class);
+             startActivity(intent);
+         }
+ 
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/home/HomeActivity.java b/app/src/main/java/kite/amibee/com/netstore/activity/home/HomeActivity.java
+index 04afce3..d5d0f38 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/home/HomeActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/home/HomeActivity.java
+@@ -20,6 +20,7 @@ import android.view.WindowManager;
+ import android.widget.ImageView;
+ import android.widget.RelativeLayout;
+ import android.widget.TextView;
++import android.widget.Toast;
+ 
+ import java.util.ArrayList;
+ import java.util.HashMap;
+@@ -30,6 +31,7 @@ import java.util.TimerTask;
+ 
+ import kite.amibee.com.netstore.BabyCareActivity;
+ import kite.amibee.com.netstore.MyApp;
++import kite.amibee.com.netstore.activity.addToCart.MyCartActivity;
+ import kite.amibee.com.netstore.activity.orders.MyOrdersActivity;
+ import kite.amibee.com.netstore.MyWishListActivity;
+ import kite.amibee.com.netstore.R;
+@@ -53,12 +55,7 @@ import me.relex.circleindicator.CircleIndicator;
+ 
+ public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+     private static final String TAG = "HomeActivity";
+-
+-    private ViewPager mPager;
+     private static int currentPage = 0;
+-    private  List<HomeBannerImages> exclusive_list_value= new ArrayList<>();
+-    private  List<HomeBannerImages> trends_list_img_value= new ArrayList<>();
+-    private  List<HomeBannerImages> offers_list= new ArrayList<>();
+     List<HomeBannerImages> cateSingleList;
+     RecyclerView rv_home_banners;
+     RecyclerView home_rv_exclusive, home_rv_offers, home_rv_trending;
+@@ -72,15 +69,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
+     View navHeaderView;
+     DrawerLayout drawer;
+     RelativeLayout home_card_shop;
+-    TextView toolbar_cart_no_tv,user_tv_name,user_tv_mobile,user_tv_mailid,
+-            tv_banner_offers,tv_banner_trends,tv_banner_exclusive;
++    TextView toolbar_cart_no_tv, user_tv_name, user_tv_mobile, user_tv_mailid,
++            tv_banner_offers, tv_banner_trends, tv_banner_exclusive;
+     Api apical;
+-    private View.OnClickListener onClickListener;
+     //
+     Map<String, List<HomeAllResponse>> catelistMap = new HashMap<>();
+-
+     PreferencesHelper preferencesHelper;
+     MyApp myApp;
++    private ViewPager mPager;
++    private List<HomeBannerImages> exclusive_list_value = new ArrayList<>();
++    private List<HomeBannerImages> trends_list_img_value = new ArrayList<>();
++    private List<HomeBannerImages> offers_list = new ArrayList<>();
++    private View.OnClickListener onClickListener;
++
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+@@ -95,12 +96,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
+ 
+         uiInit();
+ 
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(HomeActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
++
+     }
+ 
+     public void uiInit() {
+-        apical = new Api(this,"");
++        apical = new Api(this, "");
+         apical.homeAllList();
+-        preferencesHelper= new PreferencesHelper(this);
++        preferencesHelper = new PreferencesHelper(this);
+         myApp = (MyApp) getApplicationContext();
+         myApp.setContext(getApplicationContext());
+         clickListener();
+@@ -108,11 +120,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
+ 
+         //drawer
+         toolbar_menu = (ImageView) findViewById(R.id.toolbar_menu);
+-        toolbar_cart_no_tv=findViewById(R.id.toolbar_cart_no_tv);
++        toolbar_cart_no_tv = findViewById(R.id.toolbar_cart_no_tv);
+ 
+         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+         navigationView = (NavigationView) findViewById(R.id.nav_view);
+-        navHeaderView=navigationView.getHeaderView(0);
++        navHeaderView = navigationView.getHeaderView(0);
+         navigationView.setNavigationItemSelectedListener(this);
+         toolbar_menu.setOnClickListener(onClickListener);
+         //drawer
+@@ -138,7 +150,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
+         home_rv_offers.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+         home_rv_offers.setItemAnimator(new DefaultItemAnimator());
+         home_rv_offers.addItemDecoration(new SpacesItemDecoration(0, 15, 0, 0));
+-        homeOffersAdapter = new HomeOffersAdapter(HomeActivity.this,  offers_list);
++        homeOffersAdapter = new HomeOffersAdapter(HomeActivity.this, offers_list);
+         home_rv_offers.setAdapter(homeOffersAdapter);
+ 
+ 
+@@ -149,24 +161,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
+         homeTrendsAdapter = new HomeTrendsAdapter(HomeActivity.this, trends_list_img_value);
+         home_rv_trending.setAdapter(homeTrendsAdapter);
+ 
+-        user_tv_name=navHeaderView.findViewById(R.id.user_tv_name);
+-        user_tv_mailid=navHeaderView.findViewById(R.id.user_tv_mailid);
+-        user_tv_mobile=navHeaderView.findViewById(R.id.user_tv_mobile);
++        user_tv_name = navHeaderView.findViewById(R.id.user_tv_name);
++        user_tv_mailid = navHeaderView.findViewById(R.id.user_tv_mailid);
++        user_tv_mobile = navHeaderView.findViewById(R.id.user_tv_mobile);
+ 
+-        tv_banner_offers=findViewById(R.id.tv_banner_offers);
+-        tv_banner_exclusive=findViewById(R.id.tv_banner_exclusive);
+-        tv_banner_trends=findViewById(R.id.tv_banner_trends);
++        tv_banner_offers = findViewById(R.id.tv_banner_offers);
++        tv_banner_exclusive = findViewById(R.id.tv_banner_exclusive);
++        tv_banner_trends = findViewById(R.id.tv_banner_trends);
+ 
+         String userName = preferencesHelper.getUserName();
+         String email = preferencesHelper.getEmail();
+         int mobile = preferencesHelper.getMobile();
+ 
+-        Log.e(TAG, "uiInit: userName "+userName +" email "+email+" mobile "+mobile);
++        Log.e(TAG, "uiInit: userName " + userName + " email " + email + " mobile " + mobile);
+ //        Log.e(TAG, "uiInit: user_tv_name "+user_tv_name +" user_tv_mailid "+user_tv_mailid+" user_tv_mobile "+user_tv_mobile);
+ 
+         user_tv_name.setText(userName);
+         user_tv_mailid.setText(email);
+-        user_tv_mobile.setText(""+mobile);
++        user_tv_mobile.setText("" + mobile);
+ 
+ 
+     }
+@@ -174,8 +186,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
+     @Override
+     protected void onResume() {
+         super.onResume();
+-        int cartCount=preferencesHelper.getCartCount();
+-        toolbar_cart_no_tv.setText(""+cartCount);
++        toolbar_cart_no_tv.setVisibility(View.VISIBLE);
++        int cartCount = preferencesHelper.getCartCount();
++        toolbar_cart_no_tv.setText("" + cartCount);
+     }
+ 
+     @Override
+@@ -229,10 +242,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
+             Intent in = new Intent(HomeActivity.this, SelectAddressActivity.class);
+             startActivity(in);
+         } else if (id == R.id.nav_mywishlist) {
+-            Intent in = new Intent(HomeActivity.this, MyWishListActivity.class);
+-            startActivity(in);
++            /*Intent in = new Intent(HomeActivity.this, MyWishListActivity.class);
++            startActivity(in);*/
++            Intent intent = new Intent(HomeActivity.this, MyCartActivity.class);
++            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++            startActivity(intent);
+         } else if (id == R.id.nav_logout) {
+-            if (preferencesHelper.getUserRegister()){
++            if (preferencesHelper.getUserRegister()) {
+                 preferencesHelper.putUserRegister(false);
+                 preferencesHelper.clear();
+                 Intent in = new Intent(HomeActivity.this, SignInActivity.class);
+@@ -249,10 +266,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
+ 
+     private void carosalInit() {
+ 
+-        if (cateSingleList==null){
++        if (cateSingleList == null) {
+             cateSingleList = new ArrayList<>();
+         }
+-        Log.e(TAG, "carosalInit: cateSingleList "+cateSingleList.size() );
++        Log.e(TAG, "carosalInit: cateSingleList " + cateSingleList.size());
+ 
+         mPager = (ViewPager) findViewById(R.id.pager);
+         mPager.setAdapter(new HomeSliderAdapter(HomeActivity.this, cateSingleList));
+@@ -281,54 +298,52 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
+ 
+     public void productsClick(String name) {
+         Intent intent = new Intent(this, BabyCareActivity.class);
+-        intent.putExtra("product-name",name);
++        intent.putExtra("product-name", name);
+         startActivity(intent);
+     }
+ 
+ 
+     public void apiResponse(List<HomeAllCategories> homeAllCategories) {
+-        List<HomeAllCategories> homeAllCategories1=homeAllCategories;
++        List<HomeAllCategories> homeAllCategories1 = homeAllCategories;
+ //            homeBannersMainAdapter.updateAdapter(homeAllCategories1);
+-        for (int i=0;i<5;i++){
+-            if (i==0){
+-                cateSingleList=homeAllCategories1.get(i).getBannerImages();
++        for (int i = 0; i < 5; i++) {
++            if (i == 0) {
++                cateSingleList = homeAllCategories1.get(i).getBannerImages();
+                 carosalInit();
+-            }else if (i==1){
+-                String title=homeAllCategories1.get(i).layoutName;
++            } else if (i == 1) {
++                String title = homeAllCategories1.get(i).layoutName;
+                 tv_banner_exclusive.setText(title);
+-                exclusive_list_value=homeAllCategories1.get(i).getBannerImages();
++                exclusive_list_value = homeAllCategories1.get(i).getBannerImages();
+                 HomeExclusiveAdapter.updateAdapter(exclusive_list_value);
+-            }else if (i==2){
+-                String title=homeAllCategories1.get(i).layoutName;
++            } else if (i == 2) {
++                String title = homeAllCategories1.get(i).layoutName;
+                 tv_banner_offers.setText(title);
+-                offers_list=homeAllCategories1.get(i).getBannerImages();
+-                Log.e(TAG, "apiResponse: offers_list "+offers_list.size() );
++                offers_list = homeAllCategories1.get(i).getBannerImages();
++                Log.e(TAG, "apiResponse: offers_list " + offers_list.size());
+                 homeOffersAdapter.updateAdapter(offers_list);
+-            }else if (i==3){
+-                String title=homeAllCategories1.get(i).layoutName;
++            } else if (i == 3) {
++                String title = homeAllCategories1.get(i).layoutName;
+                 tv_banner_trends.setText(title);
+-                trends_list_img_value=homeAllCategories1.get(i).getBannerImages();
+-                Log.e(TAG, "apiResponse: trends_list_img_value "+trends_list_img_value.size() );
++                trends_list_img_value = homeAllCategories1.get(i).getBannerImages();
++                Log.e(TAG, "apiResponse: trends_list_img_value " + trends_list_img_value.size());
+                 homeTrendsAdapter.updateAdapter(trends_list_img_value);
+             }
+ 
+ 
+-
+-
+         }
+ 
+-        Log.e(TAG, "apiResponse: responses "+homeAllCategories1.size() );
++        Log.e(TAG, "apiResponse: responses " + homeAllCategories1.size());
+ 
+ 
+     }
+ 
+-    public void clickListener(){
+-        onClickListener= new View.OnClickListener() {
++    public void clickListener() {
++        onClickListener = new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+-                if (toolbar_menu.hashCode()==view.hashCode()){
++                if (toolbar_menu.hashCode() == view.hashCode()) {
+                     drawer.openDrawer(GravityCompat.START);
+-                }else if(home_card_shop.hashCode()==view.hashCode()){
++                } else if (home_card_shop.hashCode() == view.hashCode()) {
+                     Intent intent = new Intent(HomeActivity.this, ShopByCateActivity.class);
+                     startActivity(intent);
+                 }
+@@ -336,12 +351,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
+         };
+     }
+ 
+-    public void sendCatId(int id,String catName){
+-        String catId= String.valueOf(id);
+-        Log.e(TAG, "sendCatId: id "+id );
++    public void sendCatId(int id, String catName) {
++        String catId = String.valueOf(id);
++        //Intent intent = new Intent(HomeActivity.this, ProductListActivity.class);
+         Intent intent = new Intent(HomeActivity.this, ProductListActivity.class);
+-        intent.putExtra("catId",catId);
+-        intent.putExtra("catName",catName);
++        intent.putExtra("catId", catId);
++        intent.putExtra("catName", catName);
++        Log.e(TAG, "sendCatId: id " + catId + ",name=" + catName);
+         startActivity(intent);
+     }
+ }
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/orders/MyOrdersActivity.java b/app/src/main/java/kite/amibee/com/netstore/activity/orders/MyOrdersActivity.java
+index 6b55502..932149d 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/orders/MyOrdersActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/orders/MyOrdersActivity.java
+@@ -48,11 +48,23 @@ public class MyOrdersActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_my_orders);
+-        getSupportActionBar().hide();
++       // getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ 
+         init();
++
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(MyOrdersActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
++
+     }
+ 
+     public void init(){
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/orders/MyOrdersDetailsActivity.java b/app/src/main/java/kite/amibee/com/netstore/activity/orders/MyOrdersDetailsActivity.java
+index cf3f372..69d31bf 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/orders/MyOrdersDetailsActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/orders/MyOrdersDetailsActivity.java
+@@ -49,10 +49,22 @@ public class MyOrdersDetailsActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_my_orders_details);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+         init();
++
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(MyOrdersDetailsActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
++
+     }
+ 
+     public void init() {
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/product/ProductFullViewActivity.java b/app/src/main/java/kite/amibee/com/netstore/activity/product/ProductFullViewActivity.java
+index 13aa4e1..8424ca2 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/product/ProductFullViewActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/product/ProductFullViewActivity.java
+@@ -14,6 +14,7 @@ import android.view.WindowManager;
+ import android.widget.ImageView;
+ import android.widget.RelativeLayout;
+ import android.widget.TextView;
++import android.widget.Toast;
+ 
+ import com.bumptech.glide.Glide;
+ import com.bumptech.glide.load.DataSource;
+@@ -47,14 +48,13 @@ public class ProductFullViewActivity extends AppCompatActivity {
+     ImageView toolbar_menu_iv, toolbar_logo_iv, toolbar_back_iv, toolbar_cart_iv, iv_filter_full_view,
+             iv_product_small_1, iv_product_small_2;
+     TextView toolbar_tv_title, filter_stock_max, filter_stock_min, filter_stock_num;
+-    RelativeLayout toolbar_lay_cart,filter_lay_flip_1;
++    RelativeLayout toolbar_lay_cart, filter_lay_flip_1;
+     //toolbar
+     //ui
+     TextView order_tv_1, order_tv_2, toolbar_cart_no_tv;
+     RelativeLayout lay_AddToCart, lay_bot_2;
+     Api apical;
+     TextView tv_product_name, tv_usage_desc_filter, tv_product_desc_filter, tv_product_price, tv_product_price_dt;
+-    private View.OnClickListener onClickListener;
+     int stockCountMax = 5;
+     int stock = 0;
+     Utils utils = new Utils();
+@@ -64,18 +64,19 @@ public class ProductFullViewActivity extends AppCompatActivity {
+     ProductFullViewModel apiResponseData;
+     PreferencesHelper preferencesHelper;
+     int customerId;
+-    int addressId=0;
+-    int websiteId=0;
+-    int productId=0;
++    int addressId = 0;
++    int websiteId = 0;
++    int productId = 0;
+     int cartCount;
+-    int quoteId=0;
++    int quoteId = 0;
++    HashMap<Integer, Integer> cartValue = new HashMap<>();
++    private View.OnClickListener onClickListener;
+ 
+-    HashMap<Integer,Integer> cartValue= new HashMap<>();
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_filter_full_view);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ 
+@@ -85,13 +86,13 @@ public class ProductFullViewActivity extends AppCompatActivity {
+ 
+     public void init() {
+         String id = getIntent().getStringExtra("attri");
+-        productId= Integer.parseInt(id);
++        productId = Integer.parseInt(id);
+         Log.d(TAG, "bundle product id " + productId);
+ 
+         preferencesHelper = new PreferencesHelper(this);
+-        customerId=preferencesHelper.getCusId();
++        customerId = preferencesHelper.getCusId();
+ 
+-        quoteId=preferencesHelper.getQuoteId();
++        quoteId = preferencesHelper.getQuoteId();
+         apical = new Api(this, "");
+         apical.productDetailsview(id);
+ 
+@@ -102,15 +103,34 @@ public class ProductFullViewActivity extends AppCompatActivity {
+         toolbar_back_iv = (ImageView) findViewById(R.id.toolbar_back);
+         toolbar_tv_title = (TextView) findViewById(R.id.toolbar_tv_title);
+         toolbar_cart_no_tv = findViewById(R.id.toolbar_cart_no_tv);
+-        filter_lay_flip_1=findViewById(R.id.filter_lay_flip_1);
++        filter_lay_flip_1 = findViewById(R.id.filter_lay_flip_1);
+         tv_product_price = findViewById(R.id.tv_product_price);
+         tv_product_price_dt = findViewById(R.id.tv_product_price_dt);
+         toolbar_lay_cart = (RelativeLayout) findViewById(R.id.toolbar_lay_cart);
+         toolbar_lay_cart.setVisibility(View.VISIBLE);
++        /*toolbar_lay_cart.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "ggggggg", Toast.LENGTH_SHORT).show();
++            }
++        });*/
++
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(ProductFullViewActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
++
+         toolbar_menu_iv.setVisibility(View.GONE);
+         toolbar_logo_iv.setVisibility(View.GONE);
+         toolbar_back_iv.setVisibility(View.VISIBLE);
+-        toolbar_tv_title.setVisibility(View.GONE);
++        toolbar_tv_title.setVisibility(View.VISIBLE); //GONE
++        toolbar_tv_title.setText("Product Details");
+ 
+ 
+ ///
+@@ -135,7 +155,7 @@ public class ProductFullViewActivity extends AppCompatActivity {
+         filter_stock_min.setOnClickListener(onClickListener);
+         filter_stock_max.setOnClickListener(onClickListener);
+         lay_AddToCart.setOnClickListener(onClickListener);
+-        stock= Integer.parseInt(filter_stock_num.getText().toString());
++        stock = Integer.parseInt(filter_stock_num.getText().toString());
+ 
+     }
+ 
+@@ -147,25 +167,25 @@ public class ProductFullViewActivity extends AppCompatActivity {
+     }
+ 
+     public void apiResponse(ProductFullViewModel productAttri) {
+-        if (productAttri==null){
+-            Log.e(TAG, "apiResponse: productAttri "+productAttri );
++        if (productAttri == null) {
++            Log.e(TAG, "apiResponse: productAttri " + productAttri);
+             return;
+         }
+ 
+-        try{
++        try {
+             apiResponseData = productAttri;
+             product_disp = productAttri.getAttrEntity();
+             stockList = productAttri.getInventoryEntity();
+             priceList = productAttri.getPriceEntity();
+-            websiteId= Integer.parseInt(productAttri.getWebsiteId());
++            websiteId = Integer.parseInt(productAttri.getWebsiteId());
+             preferencesHelper.setWebsiteId(websiteId);
+             tv_product_name.setText(product_disp.getName());
+             tv_product_desc_filter.setText(product_disp.getDescription());
+             tv_usage_desc_filter.setText(product_disp.getUsage());
+-            tv_product_price.setText("AED "+priceList.getSplPrice());
+-            Log.d(TAG, "apiResponse: dt_price "+priceList.getPrice() );
+-            tv_product_price_dt.setText("AED "+priceList.getPrice());
+-            tv_product_price_dt.setPaintFlags(tv_product_price_dt.getPaintFlags() |   Paint.STRIKE_THRU_TEXT_FLAG);
++            tv_product_price.setText("AED " + priceList.getSplPrice());
++            Log.d(TAG, "apiResponse: dt_price " + priceList.getPrice());
++            tv_product_price_dt.setText("AED " + priceList.getPrice());
++            tv_product_price_dt.setPaintFlags(tv_product_price_dt.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+             ProductFullImageModel image = productAttri.getImage();
+ 
+             String url = image.getImage();
+@@ -228,8 +248,8 @@ public class ProductFullViewActivity extends AppCompatActivity {
+ 
+                     }).
+                     into(iv_product_small_2);
+-        }catch (Exception e){
+-            Log.e(TAG, "apiResponse: Exception "+e );
++        } catch (Exception e) {
++            Log.e(TAG, "apiResponse: Exception " + e);
+         }
+ 
+ 
+@@ -262,18 +282,18 @@ public class ProductFullViewActivity extends AppCompatActivity {
+     }
+ 
+     public void cartSend() {
+-        quoteId=preferencesHelper.getQuoteId();
+-        Log.d(TAG, "cartSend: quoteId "+quoteId);
+-        if (quoteId > 0){
++        quoteId = preferencesHelper.getQuoteId();
++        Log.d(TAG, "cartSend: quoteId " + quoteId);
++        if (quoteId > 0) {
+             apical.cartAll(quoteId);
+-        }else {
+-            Log.w(TAG, "cartSend: address fetch cal" );
+-            addressId=preferencesHelper.getAddressId();
+-            Log.w(TAG, "cartSend: addressId "+addressId );
+-            if (addressId > 0){
++        } else {
++            Log.w(TAG, "cartSend: address fetch cal");
++            addressId = preferencesHelper.getAddressId();
++            Log.w(TAG, "cartSend: addressId " + addressId);
++            if (addressId > 0) {
+                 cartAdd("AddNew");
+ 
+-            }else {
++            } else {
+                 // fetech address for current user
+                 apical.addressSingleUser(customerId);
+ 
+@@ -284,26 +304,26 @@ public class ProductFullViewActivity extends AppCompatActivity {
+ 
+     }
+ 
+-    public void cartAdd(String status){
+-        Log.w(TAG, "cartAdd: status "+status );
++    public void cartAdd(String status) {
++        Log.w(TAG, "cartAdd: status " + status);
+         Intent intent = new Intent(ProductFullViewActivity.this, MyCartActivity.class);
+         intent.putExtra("productId", productId);
+         intent.putExtra("quantity", String.valueOf(stock));
+         intent.putExtra("cartStatus", status);
+-        Log.w(TAG, "cartAdd: productId "+productId +"\n"+" stock "+String.valueOf(stock) );
++        Log.w(TAG, "cartAdd: productId " + productId + "\n" + " stock " + String.valueOf(stock));
+         startActivity(intent);
+     }
+ 
+-    public void apiResponseAdressList(List<AddressSingleUserModel> apiDataAddreList){
+-        if (apiDataAddreList!=null && apiDataAddreList.size() > 0){
+-            Log.e(TAG, "apiResponseAdressList: addressList "+apiDataAddreList.size() );
++    public void apiResponseAdressList(List<AddressSingleUserModel> apiDataAddreList) {
++        if (apiDataAddreList != null && apiDataAddreList.size() > 0) {
++            Log.e(TAG, "apiResponseAdressList: addressList " + apiDataAddreList.size());
+ 
+-                addressId =apiDataAddreList.get(0).getAddressId();
+-                preferencesHelper.setAddressId(addressId);
++            addressId = apiDataAddreList.get(0).getAddressId();
++            preferencesHelper.setAddressId(addressId);
+ 
+-                Log.d(TAG, "cartSend: pref addressId " + preferencesHelper.getAddressId());
+-                Log.d(TAG, "cartSend: customerId " + customerId);
+-                Log.d(TAG, "cartSend: addressId " + addressId);
++            Log.d(TAG, "cartSend: pref addressId " + preferencesHelper.getAddressId());
++            Log.d(TAG, "cartSend: customerId " + customerId);
++            Log.d(TAG, "cartSend: addressId " + addressId);
+ 
+             cartAdd("AddNew");
+ 
+@@ -313,57 +333,56 @@ public class ProductFullViewActivity extends AppCompatActivity {
+         }
+ 
+     }
++
+     public void apiCartReadResponse(AddToCartDetailModel addToCartDetailModel) {
+ 
+         ArrayList<AddToCartList> cart_list = addToCartDetailModel.getQuoteOrderItems();
+-        try{
+-            if (cart_list!=null){
+-                Log.w(TAG, "apiResponse: cart_list "+cart_list.size());
++        try {
++            if (cart_list != null) {
++                Log.w(TAG, "apiResponse: cart_list " + cart_list.size());
+                 cartValue.clear();
+-                for (int i=0;i<cart_list.size();i++){
+-                    int productId= Integer.parseInt(cart_list.get(i).getProductId());
+-                    int quantity= Integer.parseInt(cart_list.get(i).getQuantity());
+-                    cartValue.put(productId,quantity);
++                for (int i = 0; i < cart_list.size(); i++) {
++                    int productId = Integer.parseInt(cart_list.get(i).getProductId());
++                    int quantity = Integer.parseInt(cart_list.get(i).getQuantity());
++                    cartValue.put(productId, quantity);
+                 }
+ //                preferencesHelper.setCartCount(cartCount);
+ //                preferencesHelper.setQuoteId(quoteId);
+-                int cartPref=preferencesHelper.getCartCount();
+-                Log.d(TAG, "apiResponse: cartPref "+cartPref);
+-                if (cartValue!=null && cartValue.size() >0 ){
++                int cartPref = preferencesHelper.getCartCount();
++                Log.d(TAG, "apiResponse: cartPref " + cartPref);
++                if (cartValue != null && cartValue.size() > 0) {
+                     Log.d(TAG, "apiCartReadResponse: true ");
+-                    Log.w(TAG, "apiCartReadResponse: product status "+cartValue.containsKey(productId));
+-                    if (cartValue.containsKey(productId)){
++                    Log.w(TAG, "apiCartReadResponse: product status " + cartValue.containsKey(productId));
++                    if (cartValue.containsKey(productId)) {
+                         dialogCart();
+-                    }else {
++                    } else {
+                         // product not exists in cart
+                         cartAdd("AddNew");
+                     }
+-                }else {
+-                    Log.w(TAG, "apiCartReadResponse: else cartValue "+cartValue );
++                } else {
++                    Log.w(TAG, "apiCartReadResponse: else cartValue " + cartValue);
+                     cartAdd("AddNew");
+                 }
+ 
+ 
+-
+-            }else {
+-                Log.w(TAG, "apiResponse: else cart_list "+cart_list);
++            } else {
++                Log.w(TAG, "apiResponse: else cart_list " + cart_list);
+             }
+ 
+-        }catch (Exception e){
+-            Log.e(TAG, "apiResponse: cart exception "+e );
++        } catch (Exception e) {
++            Log.e(TAG, "apiResponse: cart exception " + e);
+         }
+ 
+     }
+ 
+ 
+-    public void dialogCal(){
++    public void dialogCal() {
+         Log.d(TAG, "dialogCal: ");
+         AlertDialog alertDialog = null;
+         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+         alertDialogBuilder.setMessage("You must add Address before add cart");
+ 
+ 
+-
+         alertDialogBuilder.setPositiveButton("yes",
+                 new DialogInterface.OnClickListener() {
+                     @Override
+@@ -375,7 +394,7 @@ public class ProductFullViewActivity extends AppCompatActivity {
+                     }
+                 });
+ 
+-        alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
++        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+             @Override
+             public void onClick(DialogInterface dialog, int which) {
+ 
+@@ -386,33 +405,31 @@ public class ProductFullViewActivity extends AppCompatActivity {
+ 
+     }
+ 
+-    public void dialogCart(){
++    public void dialogCart() {
+         Log.d(TAG, "dialogCart: ");
+         AlertDialog alertDialog = null;
+         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+         alertDialogBuilder.setMessage("Do you want to cart Replace or Update?");
+ 
+ 
+-
+         alertDialogBuilder.setPositiveButton("Add",
+                 new DialogInterface.OnClickListener() {
+                     @Override
+                     public void onClick(DialogInterface arg0, int arg1) {
+-                       cartAdd("AddNew");
++                        cartAdd("AddNew");
+ 
+ 
+                     }
+                 });
+-        alertDialogBuilder.setNeutralButton("Cancel",new DialogInterface.OnClickListener() {
++        alertDialogBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+             @Override
+             public void onClick(DialogInterface arg0, int arg1) {
+ 
+ 
+-
+             }
+         });
+ 
+-        alertDialogBuilder.setNegativeButton("Replace",new DialogInterface.OnClickListener() {
++        alertDialogBuilder.setNegativeButton("Replace", new DialogInterface.OnClickListener() {
+             @Override
+             public void onClick(DialogInterface dialog, int which) {
+                 cartAdd("Replace");
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/product/ProductListActivity.java b/app/src/main/java/kite/amibee/com/netstore/activity/product/ProductListActivity.java
+index 65a31e1..63facc3 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/product/ProductListActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/product/ProductListActivity.java
+@@ -27,6 +27,7 @@ import java.util.List;
+ import kite.amibee.com.netstore.R;
+ import kite.amibee.com.netstore.SpacesItemDecoration;
+ import kite.amibee.com.netstore.TabAdapter;
++import kite.amibee.com.netstore.activity.addToCart.MyCartActivity;
+ import kite.amibee.com.netstore.adapter.LotionBrandFilterAdapter;
+ import kite.amibee.com.netstore.adapter.ProductFilterAdapter;
+ import kite.amibee.com.netstore.model.BabyCareOffersModel;
+@@ -70,12 +71,23 @@ public class ProductListActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_lotion_oils);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ 
+ 
+         init();
++
++        ((ImageView) findViewById(R.id.toolbar_cart)).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                //Toast.makeText(ProductFullViewActivity.this, "jjjjjjjj", Toast.LENGTH_SHORT).show();
++                Intent intent = new Intent(ProductListActivity.this, MyCartActivity.class);
++                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
++                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++                startActivity(intent);
++            }
++        });
+     }
+ 
+     @Override
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/register/Forgot_password.java b/app/src/main/java/kite/amibee/com/netstore/activity/register/Forgot_password.java
+index 9cc8afb..46b00ad 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/register/Forgot_password.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/register/Forgot_password.java
+@@ -42,7 +42,7 @@ public class Forgot_password extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_forgot_password);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+         init();
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/register/Passwordreset_splash.java b/app/src/main/java/kite/amibee/com/netstore/activity/register/Passwordreset_splash.java
+index 0390995..42b02b0 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/register/Passwordreset_splash.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/register/Passwordreset_splash.java
+@@ -18,7 +18,7 @@ public class Passwordreset_splash extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_passwordreset_splash);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ 
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/register/Resetpassword.java b/app/src/main/java/kite/amibee/com/netstore/activity/register/Resetpassword.java
+index 78c498e..ca6ad48 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/register/Resetpassword.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/register/Resetpassword.java
+@@ -47,7 +47,7 @@ public class Resetpassword extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_resetpassword);
+-        getSupportActionBar().hide();
++       // getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ 
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/register/SignInActivity.java b/app/src/main/java/kite/amibee/com/netstore/activity/register/SignInActivity.java
+index 968a14b..f8c2847 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/register/SignInActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/register/SignInActivity.java
+@@ -54,7 +54,7 @@ public class SignInActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_log_in);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+         init();
+diff --git a/app/src/main/java/kite/amibee/com/netstore/activity/register/SignUpActivity.java b/app/src/main/java/kite/amibee/com/netstore/activity/register/SignUpActivity.java
+index dabb582..968f981 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/activity/register/SignUpActivity.java
++++ b/app/src/main/java/kite/amibee/com/netstore/activity/register/SignUpActivity.java
+@@ -45,7 +45,7 @@ public class SignUpActivity extends AppCompatActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_sign_up);
+-        getSupportActionBar().hide();
++        //getSupportActionBar().hide();
+         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ 
+@@ -356,7 +356,7 @@ public class SignUpActivity extends AppCompatActivity {
+             /*CusID=preferencesHelper.getCusId();
+             api.addressList(CusID);*/
+ 
+-            Intent in = new Intent(SignUpActivity.this, HomeActivity.class);
++            Intent in = new Intent(SignUpActivity.this, SignInActivity.class);
+             startActivity(in);
+             overridePendingTransition(R.anim.move_right_in_activity, R.anim.move_left_out_activity);
+             finish();
+diff --git a/app/src/main/java/kite/amibee/com/netstore/adapter/DeliveryCartAdapter.java b/app/src/main/java/kite/amibee/com/netstore/adapter/DeliveryCartAdapter.java
+index 188a7ea..4943ff8 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/adapter/DeliveryCartAdapter.java
++++ b/app/src/main/java/kite/amibee/com/netstore/adapter/DeliveryCartAdapter.java
+@@ -52,7 +52,7 @@ public class DeliveryCartAdapter extends RecyclerView.Adapter<DeliveryCartAdapte
+ 
+     @Override
+     public void onBindViewHolder(final ViewHolder holder, final int position) {
+-//        holder.sub_cate_iv.setImageDrawable(offersNameList.get(position).getImage());
++//       holder.sub_cate_iv.setImageDrawable(offersNameList.get(position).getImage());
+         Log.e(TAG, "apiResponse: name " + offersNameList.get(position).getProductName().toString());
+         Log.e(TAG, "apiResponse: price " + offersNameList.get(position).getPrice());
+         Log.e(TAG, "apiResponse: price_dt " + offersNameList.get(position).getCost());
+diff --git a/app/src/main/java/kite/amibee/com/netstore/adapter/HomeExclusiveAdapter.java b/app/src/main/java/kite/amibee/com/netstore/adapter/HomeExclusiveAdapter.java
+index c376f12..09db921 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/adapter/HomeExclusiveAdapter.java
++++ b/app/src/main/java/kite/amibee/com/netstore/adapter/HomeExclusiveAdapter.java
+@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.ImageView;
++import android.widget.Toast;
+ 
+ import com.bumptech.glide.Glide;
+ import com.bumptech.glide.load.DataSource;
+@@ -28,26 +29,26 @@ import kite.amibee.com.netstore.util.Constants;
+ 
+ public class HomeExclusiveAdapter extends RecyclerView.Adapter<HomeExclusiveAdapter.ViewHolder> {
+     private static final String TAG = "EpgDetailChannelAdapter";
+-
+-    private LayoutInflater mInflater;
+     View view;
+     // data is passed into the constructor
+     Context context;
+     List<HomeBannerImages> cateSingleList;
++    private LayoutInflater mInflater;
++
+     public HomeExclusiveAdapter(Context context, List<?> cateSingleList) {
+         this.mInflater = LayoutInflater.from(context);
+-        this.context=context;
+-        this.cateSingleList= (List<HomeBannerImages>) cateSingleList;
++        this.context = context;
++        this.cateSingleList = (List<HomeBannerImages>) cateSingleList;
++
+ 
+-       
+     }
+ 
+     @Override
+     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+ 
+-            view = mInflater.inflate(R.layout.home_adap_exclusive, parent, false);
++        view = mInflater.inflate(R.layout.home_adap_exclusive, parent, false);
+ 
+-            return new ViewHolder(view);
++        return new ViewHolder(view);
+     }
+ 
+     @Override
+@@ -55,7 +56,7 @@ public class HomeExclusiveAdapter extends RecyclerView.Adapter<HomeExclusiveAdap
+         holder.iv_adap_exclusive.setId(0);
+ //        String url= Constants.imageUrl(cateSingleList.get(position).getImageUrl());
+ //         String url= Constants.BASEURL + cateSingleList.get(position).getImageUrl();
+-        String url= cateSingleList.get(position).getImageUrl();
++        String url = cateSingleList.get(position).getImageUrl();
+         /*Glide.with(context)
+                 .load(url)
+                 .into(holder.iv_adap_exclusive);*/
+@@ -80,11 +81,33 @@ public class HomeExclusiveAdapter extends RecyclerView.Adapter<HomeExclusiveAdap
+         holder.iv_adap_exclusive.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+-                int id=view.getId();
+-                if (id==0 || id==1){
++
++                //int id = view.getId();
++                /*if (id==0 || id==1){
+                     id=2;
++                }*/
++
++                int id = Integer.parseInt(cateSingleList.get(position).bannerId);
++
++                String catName = "";
++                int catId = 0;
++
++                if (id == 1) {
++                    catId = 7;
++                    catName = "Care";
++                } else if (id == 2) {
++                    catId = 74;
++                    catName = "Perfume";
++                } else if (id == 3) {
++                    catId = 60;
++                    catName = "Nutrition";
++                } else if (id == 4) {
++                    catId = 44;
++                    catName = "Health";
+                 }
+-                ((HomeActivity)context).sendCatId(id,"");
++
++                //Toast.makeText(context, id + "ex" + catId + "," + catName, Toast.LENGTH_SHORT).show();
++                ((HomeActivity) context).sendCatId(catId, catName);
+             }
+         });
+     }
+@@ -94,18 +117,19 @@ public class HomeExclusiveAdapter extends RecyclerView.Adapter<HomeExclusiveAdap
+         return this.cateSingleList.size();
+     }
+ 
++    public void updateAdapter(List<HomeBannerImages> cateSingleList) {
++        this.cateSingleList = cateSingleList;
++        notifyDataSetChanged();
++    }
++
+     public class ViewHolder extends RecyclerView.ViewHolder {
+         ImageView iv_adap_exclusive;
++
+         @SuppressLint("NewApi")
+         ViewHolder(View itemView) {
+             super(itemView);
+ 
+-            iv_adap_exclusive=(ImageView)itemView.findViewById(R.id.iv_adap_exclusive);
++            iv_adap_exclusive = (ImageView) itemView.findViewById(R.id.iv_adap_exclusive);
+         }
+     }
+-
+-    public void updateAdapter(List<HomeBannerImages> cateSingleList){
+-            this.cateSingleList=cateSingleList;
+-            notifyDataSetChanged();
+-    }
+ }
+diff --git a/app/src/main/java/kite/amibee/com/netstore/adapter/HomeOffersAdapter.java b/app/src/main/java/kite/amibee/com/netstore/adapter/HomeOffersAdapter.java
+index bf0e82c..af7fd35 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/adapter/HomeOffersAdapter.java
++++ b/app/src/main/java/kite/amibee/com/netstore/adapter/HomeOffersAdapter.java
+@@ -14,6 +14,7 @@ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.ImageView;
+ import android.widget.TextView;
++import android.widget.Toast;
+ 
+ import com.bumptech.glide.Glide;
+ import com.bumptech.glide.load.DataSource;
+@@ -118,11 +119,34 @@ public class HomeOffersAdapter extends RecyclerView.Adapter<HomeOffersAdapter.Vi
+         holder.iv_offers.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+-                int id=view.getId();
++                /*int id=view.getId();
+                 if (id==0 || id==1){
+                     id=2;
+                 }
+-               ((HomeActivity)context).sendCatId(id,"");
++               ((HomeActivity)context).sendCatId(id,"");*/
++
++                int id = Integer.parseInt(cateSingleList.get(position).bannerId);
++
++                String catName = "";
++                int catId = 0;
++
++                if (id == 1) {
++                    catId = 7;
++                    catName = "Care";
++                } else if (id == 2) {
++                    catId = 74;
++                    catName = "Perfume";
++                } else if (id == 3) {
++                    catId = 60;
++                    catName = "Nutrition";
++                } else if (id == 4) {
++                    catId = 44;
++                    catName = "Health";
++                }
++
++                //Toast.makeText(context, id + "off" + catId + "," + catName, Toast.LENGTH_SHORT).show();
++                ((HomeActivity) context).sendCatId(catId, catName);
++
+             }
+         });
+ 
+diff --git a/app/src/main/java/kite/amibee/com/netstore/adapter/HomeSliderAdapter.java b/app/src/main/java/kite/amibee/com/netstore/adapter/HomeSliderAdapter.java
+index 828b4a2..ffec71b 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/adapter/HomeSliderAdapter.java
++++ b/app/src/main/java/kite/amibee/com/netstore/adapter/HomeSliderAdapter.java
+@@ -15,6 +15,7 @@ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.ImageView;
+ import android.widget.TextView;
++import android.widget.Toast;
+ 
+ import com.bumptech.glide.Glide;
+ import com.bumptech.glide.load.DataSource;
+@@ -97,11 +98,33 @@ public class HomeSliderAdapter extends PagerAdapter {
+         iv_home_slide.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+-                int id=position;
++                /*int id=position;
+                 if (id==0 || id==1){
+                     id=2;
++                }*/
++
++                int id = Integer.parseInt(cateSingleList.get(position).bannerId);
++
++                String catName = "";
++                int catId = 0;
++
++                if (id == 1) {
++                    catId = 7;
++                    catName = "Care";
++                } else if (id == 2) {
++                    catId = 74;
++                    catName = "Perfume";
++                } else if (id == 3) {
++                    catId = 60;
++                    catName = "Nutrition";
++                } else if (id == 4) {
++                    catId = 44;
++                    catName = "Health";
+                 }
+-                ((HomeActivity)context).sendCatId(id,"");
++
++                //Toast.makeText(context, id + "ddddddddddd" + catId + "," + catName, Toast.LENGTH_SHORT).show();
++
++                ((HomeActivity)context).sendCatId(catId,catName);
+             }
+         });
+         return myImageLayout;
+diff --git a/app/src/main/java/kite/amibee/com/netstore/adapter/HomeTrendsAdapter.java b/app/src/main/java/kite/amibee/com/netstore/adapter/HomeTrendsAdapter.java
+index f1e746a..a709c66 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/adapter/HomeTrendsAdapter.java
++++ b/app/src/main/java/kite/amibee/com/netstore/adapter/HomeTrendsAdapter.java
+@@ -19,6 +19,7 @@ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.ImageView;
+ import android.widget.RelativeLayout;
++import android.widget.Toast;
+ 
+ import com.bumptech.glide.Glide;
+ import com.bumptech.glide.load.DataSource;
+@@ -110,11 +111,31 @@ public class HomeTrendsAdapter extends RecyclerView.Adapter<HomeTrendsAdapter.Vi
+         holder.lay_adap_trends.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+-                int id=view.getId();
++                /*int id=view.getId();
+                 if (id==0 || id==1){
+                     id=2;
++                }*/
++                int id = Integer.parseInt(trendsList.get(position).bannerId);
++
++                String catName = "";
++                int catId = 0;
++
++                if (id == 1) {
++                    catId = 7;
++                    catName = "Care";
++                } else if (id == 2) {
++                    catId = 74;
++                    catName = "Perfume";
++                } else if (id == 3) {
++                    catId = 60;
++                    catName = "Nutrition";
++                } else if (id == 4) {
++                    catId = 44;
++                    catName = "Health";
+                 }
+-                ((HomeActivity)context).sendCatId(id,"");
++
++                //Toast.makeText(context, id + "tre" + catId + "," + catName, Toast.LENGTH_SHORT).show();
++                ((HomeActivity) context).sendCatId(catId, catName);
+             }
+         });
+ 
+diff --git a/app/src/main/java/kite/amibee/com/netstore/model/pojo/addtocart/AddToCartDetailModel.java b/app/src/main/java/kite/amibee/com/netstore/model/pojo/addtocart/AddToCartDetailModel.java
+index 8d0d1f6..69dc284 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/model/pojo/addtocart/AddToCartDetailModel.java
++++ b/app/src/main/java/kite/amibee/com/netstore/model/pojo/addtocart/AddToCartDetailModel.java
+@@ -21,7 +21,7 @@ public class AddToCartDetailModel {
+     @SerializedName("totalItemsQty")
+     String totalItemsQty;
+     @SerializedName("subTotal")
+-    String subTotal;
++    int subTotal;
+     @SerializedName("grandTotal")
+     String grandTotal;
+     @SerializedName("shippingAmount")
+@@ -69,11 +69,11 @@ public class AddToCartDetailModel {
+         this.totalItemsQty = totalItemsQty;
+     }
+ 
+-    public String getSubTotal() {
++    public int getSubTotal() {
+         return subTotal;
+     }
+ 
+-    public void setSubTotal(String subTotal) {
++    public void setSubTotal(int subTotal) {
+         this.subTotal = subTotal;
+     }
+ 
+diff --git a/app/src/main/java/kite/amibee/com/netstore/model/pojo/addtocart/AddToCartList.java b/app/src/main/java/kite/amibee/com/netstore/model/pojo/addtocart/AddToCartList.java
+index 2b1af65..878f0bc 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/model/pojo/addtocart/AddToCartList.java
++++ b/app/src/main/java/kite/amibee/com/netstore/model/pojo/addtocart/AddToCartList.java
+@@ -35,19 +35,19 @@ public class AddToCartList {
+         this.productName = productName;
+     }
+ 
+-    public String getPrice() {
++    public float getPrice() {
+         return price;
+     }
+ 
+-    public void setPrice(String price) {
++    public void setPrice(float price) {
+         this.price = price;
+     }
+ 
+-    public String getCost() {
++    public float getCost() {
+         return cost;
+     }
+ 
+-    public void setCost(String cost) {
++    public void setCost(float cost) {
+         this.cost = cost;
+     }
+ 
+@@ -76,9 +76,9 @@ public class AddToCartList {
+     @SerializedName("productName")
+     String productName;
+     @SerializedName("price")
+-    String price;
++    float price;
+     @SerializedName("cost")
+-    String cost;
++    float cost;
+     @SerializedName("quantity")
+     String quantity;
+     @SerializedName("sku")
+diff --git a/app/src/main/java/kite/amibee/com/netstore/model/pojo/productAttr/Attributes.java b/app/src/main/java/kite/amibee/com/netstore/model/pojo/productAttr/Attributes.java
+index 957932b..e5601d7 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/model/pojo/productAttr/Attributes.java
++++ b/app/src/main/java/kite/amibee/com/netstore/model/pojo/productAttr/Attributes.java
+@@ -13,15 +13,15 @@ public class Attributes implements Comparable<Attributes> {
+     @SerializedName("productId")
+     public String productId;
+     @SerializedName("price")
+-    public String price;
++    public float price;
+     @SerializedName("specialPrice")
+-    public String specialPrice;
++    public float specialPrice;
+     @SerializedName("imageUrl")
+     public String imageUrl;
+     @SerializedName("imageLabel")
+     public String imageLabel;
+     String tag;
+-    public Attributes(String tag,String categoryId,String productId,String price,String specialPrice,String imageUrl,String imageLabel){
++    public Attributes(String tag,String categoryId,String productId,float price,float specialPrice,String imageUrl,String imageLabel){
+         this.tag=tag;
+         this.categoryId=categoryId;
+         this.productId=productId;
+@@ -48,19 +48,19 @@ public class Attributes implements Comparable<Attributes> {
+         this.productId = productId;
+     }
+ 
+-    public String getPrice() {
++    public float getPrice() {
+         return price;
+     }
+ 
+-    public void setPrice(String price) {
++    public void setPrice(float price) {
+         this.price = price;
+     }
+ 
+-    public String getSpecialPrice() {
++    public float getSpecialPrice() {
+         return specialPrice;
+     }
+ 
+-    public void setSpecialPrice(String specialPrice) {
++    public void setSpecialPrice(float specialPrice) {
+         this.specialPrice = specialPrice;
+     }
+ 
+@@ -87,8 +87,8 @@ public class Attributes implements Comparable<Attributes> {
+             Log.w(TAG, "compareTo: tag "+tag );
+             if (tag!=null){
+                 if (tag.equals("lowtohigh")){
+-                    Float s_price = Float.parseFloat(specialPrice);
+-                    Float c_price = Float.parseFloat(price.specialPrice);
++                    Float s_price = specialPrice;
++                    Float c_price = price.specialPrice;
+                     if (s_price == c_price)
+                         return 0;
+                     else if (s_price > c_price)
+@@ -96,8 +96,8 @@ public class Attributes implements Comparable<Attributes> {
+                     else
+                         return -1;
+                 } else {
+-                    Float s_price = Float.parseFloat(specialPrice);
+-                    Float c_price = Float.parseFloat(price.specialPrice);
++                    Float s_price = specialPrice;
++                    Float c_price = price.specialPrice;
+                     if (s_price == c_price)
+                         return 0;
+                     else if (s_price < c_price)
+@@ -106,8 +106,8 @@ public class Attributes implements Comparable<Attributes> {
+                         return -1;
+                 }
+             }else {
+-                Float s_price = Float.parseFloat(specialPrice);
+-                Float c_price = Float.parseFloat(price.specialPrice);
++                Float s_price = specialPrice;
++                Float c_price = price.specialPrice;
+                 if (s_price == c_price)
+                     return 0;
+                 else if (s_price < c_price)
+diff --git a/app/src/main/java/kite/amibee/com/netstore/model/pojo/productAttr/ProductFullPriceModel.java b/app/src/main/java/kite/amibee/com/netstore/model/pojo/productAttr/ProductFullPriceModel.java
+index 989a4eb..220272d 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/model/pojo/productAttr/ProductFullPriceModel.java
++++ b/app/src/main/java/kite/amibee/com/netstore/model/pojo/productAttr/ProductFullPriceModel.java
+@@ -8,7 +8,7 @@ public class ProductFullPriceModel {
+     @SerializedName("prodId")
+     String prodId;
+     @SerializedName("price")
+-    String price;
++    float price;
+     @SerializedName("cost")
+     String cost;
+ 
+@@ -28,11 +28,11 @@ public class ProductFullPriceModel {
+         this.prodId = prodId;
+     }
+ 
+-    public String getPrice() {
++    public float getPrice() {
+         return price;
+     }
+ 
+-    public void setPrice(String price) {
++    public void setPrice(float price) {
+         this.price = price;
+     }
+ 
+@@ -44,16 +44,16 @@ public class ProductFullPriceModel {
+         this.cost = cost;
+     }
+ 
+-    public String getSplPrice() {
++    public float getSplPrice() {
+         return splPrice;
+     }
+ 
+-    public void setSplPrice(String splPrice) {
++    public void setSplPrice(float splPrice) {
+         this.splPrice = splPrice;
+     }
+ 
+     @SerializedName("specialPrice")
+-    String splPrice;
++    float splPrice;
+ 
+ 
+ 
+diff --git a/app/src/main/java/kite/amibee/com/netstore/model/pojo/signin/SignInDetailsModel.java b/app/src/main/java/kite/amibee/com/netstore/model/pojo/signin/SignInDetailsModel.java
+index 2736118..2f46aa7 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/model/pojo/signin/SignInDetailsModel.java
++++ b/app/src/main/java/kite/amibee/com/netstore/model/pojo/signin/SignInDetailsModel.java
+@@ -77,19 +77,19 @@ public class SignInDetailsModel {
+         this.active = active;
+     }
+ 
+-    public List<String> getCreatedAt() {
++    public String getCreatedAt() {
+         return createdAt;
+     }
+ 
+-    public void setCreatedAt(List<String> createdAt) {
++    public void setCreatedAt(String createdAt) {
+         this.createdAt = createdAt;
+     }
+ 
+-    public List<String> getUpdatedAt() {
++    public String getUpdatedAt() {
+         return updatedAt;
+     }
+ 
+-    public void setUpdatedAt(List<String> updatedAt) {
++    public void setUpdatedAt(String updatedAt) {
+         this.updatedAt = updatedAt;
+     }
+ 
+@@ -120,9 +120,9 @@ public class SignInDetailsModel {
+     @SerializedName("active")
+     String active;
+     @SerializedName("createdAt")
+-    List<String> createdAt;
++    String createdAt;
+     @SerializedName("updatedAt")
+-    List<String> updatedAt;
++    String updatedAt;
+     @SerializedName("quoteId")
+     String quoteId;
+ 
+diff --git a/app/src/main/java/kite/amibee/com/netstore/model/pojo/signin/SignInModel.java b/app/src/main/java/kite/amibee/com/netstore/model/pojo/signin/SignInModel.java
+index b350c7b..01f00e9 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/model/pojo/signin/SignInModel.java
++++ b/app/src/main/java/kite/amibee/com/netstore/model/pojo/signin/SignInModel.java
+@@ -24,4 +24,12 @@ public class SignInModel {
+ 
+     @SerializedName("customer")
+     SignInDetailsModel customer;
++
++    @Override
++    public String toString() {
++        return "SignInModel{" +
++                "message='" + message + '\'' +
++                ", customer=" + customer +
++                '}';
++    }
+ }
+diff --git a/app/src/main/java/kite/amibee/com/netstore/util/api/Api.java b/app/src/main/java/kite/amibee/com/netstore/util/api/Api.java
+index bfb52e2..410f1b2 100644
+--- a/app/src/main/java/kite/amibee/com/netstore/util/api/Api.java
++++ b/app/src/main/java/kite/amibee/com/netstore/util/api/Api.java
+@@ -41,136 +41,135 @@ public class Api {
+     Context context;
+     ApiInterface apiService;
+     Utils utils;
+-    public Api(Context context,String apiTag){
+-        Log.e(TAG, "Api: apiTag "+apiTag );
+-        this.context=context;
+-        if (apiTag.equals(Constants.ATTR)){
+-            apiService =ApiClient1.getClient(apiTag).create(ApiInterface.class);
+-        }else {
+-            apiService =ApiClient.getClient(apiTag).create(ApiInterface.class);
++
++    public Api(Context context, String apiTag) {
++        Log.e(TAG, "Api: apiTag " + apiTag);
++        this.context = context;
++        if (apiTag.equals(Constants.ATTR)) {
++            apiService = ApiClient1.getClient(apiTag).create(ApiInterface.class);
++        } else {
++            apiService = ApiClient.getClient(apiTag).create(ApiInterface.class);
+         }
+-        utils= new Utils();
++        utils = new Utils();
+         utils.progressSet((Activity) context);
+     }
+-    public Api(Context context){
+-        this.context=context;
+-        apiService =ApiClient.getClient("").create(ApiInterface.class);
+-        utils= new Utils();
++
++    public Api(Context context) {
++        this.context = context;
++        apiService = ApiClient.getClient("").create(ApiInterface.class);
++        utils = new Utils();
+         utils.progressSet((Activity) context);
+     }
+ 
+-    public void cateList(){
++    public void cateList() {
+         utils.progressShow();
+         Call<List<Categories>> call = apiService.category();
+         call.enqueue(new Callback<List<Categories>>() {
+             @Override
+-            public void onResponse(Call<List<Categories>>call, Response<List<Categories>> response) {
++            public void onResponse(Call<List<Categories>> call, Response<List<Categories>> response) {
+                 utils.progressHide();
+-                List<Categories> apiResponse= response.body();
+-                if (apiResponse!=null){
++                List<Categories> apiResponse = response.body();
++                if (apiResponse != null) {
+                     Log.e(TAG, "response1 cateList " + apiResponse.size());
+-                    if (context instanceof ShopByCateActivity){
+-                        ((ShopByCateActivity)context).apiResponse(apiResponse);
++                    if (context instanceof ShopByCateActivity) {
++                        ((ShopByCateActivity) context).apiResponse(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<List<Categories>>call, Throwable t) {
++            public void onFailure(Call<List<Categories>> call, Throwable t) {
+                 // Log error here since request failed
+-                Log.e(TAG,"onFailure "+ t.toString());
++                Log.e(TAG, "onFailure " + t.toString());
+                 utils.progressHide();
+             }
+         });
+     }
+-    public void cateSearchList(String search){
++
++    public void cateSearchList(String search) {
+         utils.progressShow();
+         Call<List<Categories>> call = apiService.categorySearchList(search);
+         call.enqueue(new Callback<List<Categories>>() {
+             @Override
+-            public void onResponse(Call<List<Categories>>call, Response<List<Categories>> response) {
++            public void onResponse(Call<List<Categories>> call, Response<List<Categories>> response) {
+                 utils.progressHide();
+-                List<Categories> apiResponse= response.body();
+-                if (apiResponse!=null){
++                List<Categories> apiResponse = response.body();
++                if (apiResponse != null) {
+                     Log.e(TAG, "response1 cateSearchList " + apiResponse.size());
+-                    if (context instanceof ShopByCateActivity){
+-                        ((ShopByCateActivity)context).apiResponseSearch(apiResponse);
++                    if (context instanceof ShopByCateActivity) {
++                        ((ShopByCateActivity) context).apiResponseSearch(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<List<Categories>>call, Throwable t) {
++            public void onFailure(Call<List<Categories>> call, Throwable t) {
+                 // Log error here since request failed
+-                Log.e(TAG,"onFailure "+ t.toString());
++                Log.e(TAG, "onFailure " + t.toString());
+                 utils.progressHide();
+             }
+         });
+     }
+ 
+-    public void homeAllList(){
++    public void homeAllList() {
+         utils.progressShow();
+         Call<List<HomeAllCategories>> call = apiService.homeCategory();
+         call.enqueue(new Callback<List<HomeAllCategories>>() {
+             @Override
+-            public void onResponse(Call<List<HomeAllCategories>>call, Response<List<HomeAllCategories>> response) {
++            public void onResponse(Call<List<HomeAllCategories>> call, Response<List<HomeAllCategories>> response) {
+                 utils.progressHide();
+-                List<HomeAllCategories> apiResponse= response.body();
+-                if (apiResponse!=null){
++                List<HomeAllCategories> apiResponse = response.body();
++                if (apiResponse != null) {
+                     Log.e(TAG, "response1 homeAllList " + apiResponse.size());
+-                    if (context instanceof HomeActivity){
+-                        ((HomeActivity)context).apiResponse(apiResponse);
++                    if (context instanceof HomeActivity) {
++                        ((HomeActivity) context).apiResponse(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<List<HomeAllCategories>>call, Throwable t) {
++            public void onFailure(Call<List<HomeAllCategories>> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+             }
+         });
+     }
+-    public void productList(int id){
++
++    public void productList(int id) {
+         utils.progressShow();
+         Call<List<Attributes>> call = apiService.productList(id);
+         call.enqueue(new Callback<List<Attributes>>() {
+             @Override
+-            public void onResponse(Call<List<Attributes>>call, Response<List<Attributes>> response) {
++            public void onResponse(Call<List<Attributes>> call, Response<List<Attributes>> response) {
+                 utils.progressHide();
+-                List<Attributes> apiResponse= response.body();
+-                if (apiResponse!=null){
+-                    Log.e(TAG, "onResponse:  productArrt "+apiResponse.size());
+-                    if (context instanceof ProductListActivity){
+-                        ((ProductListActivity)context).apiResponse(apiResponse);
++                List<Attributes> apiResponse = response.body();
++                if (apiResponse != null) {
++                    Log.e(TAG, "onResponse:  productArrt " + apiResponse.size());
++                    if (context instanceof ProductListActivity) {
++                        ((ProductListActivity) context).apiResponse(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<List<Attributes>>call, Throwable t) {
++            public void onFailure(Call<List<Attributes>> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+@@ -178,62 +177,58 @@ public class Api {
+         });
+     }
+ 
+-    public void productPriceFilter(int cateId,long minPrice,long maxPrice){
++    public void productPriceFilter(int cateId, long minPrice, long maxPrice) {
+         utils.progressShow();
+-        Call<List<Attributes>> call = apiService.productPriceFilter(cateId,minPrice,maxPrice);
++        Call<List<Attributes>> call = apiService.productPriceFilter(cateId, minPrice, maxPrice);
+         call.enqueue(new Callback<List<Attributes>>() {
+             @Override
+-            public void onResponse(Call<List<Attributes>>call, Response<List<Attributes>> response) {
++            public void onResponse(Call<List<Attributes>> call, Response<List<Attributes>> response) {
+                 utils.progressHide();
+-                List<Attributes> apiResponse= response.body();
+-                if (apiResponse!=null){
++                List<Attributes> apiResponse = response.body();
++                if (apiResponse != null) {
+                     Log.e(TAG, "response1 productPriceFilter " + apiResponse.size());
+-                    if (context instanceof ProductListActivity){
+-                        ((ProductListActivity)context).apiResponse(apiResponse);
++                    if (context instanceof ProductListActivity) {
++                        ((ProductListActivity) context).apiResponse(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<List<Attributes>>call, Throwable t) {
++            public void onFailure(Call<List<Attributes>> call, Throwable t) {
+                 // Log error here since request failed
+-                Log.e(TAG,"onFailure "+ t.toString());
++                Log.e(TAG, "onFailure " + t.toString());
+                 utils.progressHide();
+             }
+         });
+     }
+ 
+-    public void productDetailsview(String id){
++    public void productDetailsview(String id) {
+         utils.progressShow();
+         Call<ProductFullViewModel> call = apiService.productAttrSingle(id);
+         call.enqueue(new Callback<ProductFullViewModel>() {
+             @Override
+-            public void onResponse(Call<ProductFullViewModel>call, Response<ProductFullViewModel> response) {
++            public void onResponse(Call<ProductFullViewModel> call, Response<ProductFullViewModel> response) {
+                 utils.progressHide();
+-                ProductFullViewModel apiResponse= response.body();
+-                if (apiResponse!=null){
+-                    Log.e(TAG, "onResponse:  productDetailsview "+apiResponse );
+-                    if (context instanceof ProductFullViewActivity){
+-                        ((ProductFullViewActivity)context).apiResponse(apiResponse);
++                ProductFullViewModel apiResponse = response.body();
++                if (apiResponse != null) {
++                    Log.e(TAG, "onResponse:  productDetailsview " + apiResponse);
++                    if (context instanceof ProductFullViewActivity) {
++                        ((ProductFullViewActivity) context).apiResponse(apiResponse);
+                     }
+ 
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+-
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<ProductFullViewModel>call, Throwable t) {
++            public void onFailure(Call<ProductFullViewModel> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+@@ -241,39 +236,35 @@ public class Api {
+         });
+     }
+ 
+-    public void addToCart(JsonObject jsonObject){
++    public void addToCart(JsonObject jsonObject) {
+         utils.progressShow();
+         Call<AddToCartDetailModel> call = apiService.addToCart(jsonObject);
+         call.enqueue(new Callback<AddToCartDetailModel>() {
+             @Override
+-            public void onResponse(Call<AddToCartDetailModel>call, Response<AddToCartDetailModel> response) {
++            public void onResponse(Call<AddToCartDetailModel> call, Response<AddToCartDetailModel> response) {
+                 utils.progressHide();
+ 
+-                try{
+-                    AddToCartDetailModel apiResponse= response.body();
+-                    if (apiResponse!=null){
+-                        Log.e(TAG, "onResponse:  addToCart "+apiResponse );
+-                        if (context instanceof MyCartActivity){
+-                            ((MyCartActivity)context).apiResponse(apiResponse);
+-                        }else if (context instanceof DeliveryActivity){
+-                            ((DeliveryActivity)context).apiResponse(apiResponse);
++                try {
++                    AddToCartDetailModel apiResponse = response.body();
++                    if (apiResponse != null) {
++                        Log.e(TAG, "onResponse:  addToCart " + apiResponse);
++                        if (context instanceof MyCartActivity) {
++                            ((MyCartActivity) context).apiResponse(apiResponse);
++                        } else if (context instanceof DeliveryActivity) {
++                            ((DeliveryActivity) context).apiResponse(apiResponse);
+                         }
+-                    }else {
++                    } else {
+                         utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                     }
+-                }catch (Exception e){
+-                    Log.e(TAG, "addToCart: Exception "+e );
++                } catch (Exception e) {
++                    Log.e(TAG, "addToCart: Exception " + e);
+                 }
+ 
+ 
+-
+-
+-
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<AddToCartDetailModel>call, Throwable t) {
++            public void onFailure(Call<AddToCartDetailModel> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+@@ -281,32 +272,32 @@ public class Api {
+         });
+     }
+ 
+-    public void cartUpdateOrReplace(JsonObject jsonObject){
++    public void cartUpdateOrReplace(JsonObject jsonObject) {
+         utils.progressShow();
+         Call<AddToCartDetailModel> call = apiService.cartUpdateOrReplace(jsonObject);
+         call.enqueue(new Callback<AddToCartDetailModel>() {
+             @Override
+-            public void onResponse(Call<AddToCartDetailModel>call, Response<AddToCartDetailModel> response) {
++            public void onResponse(Call<AddToCartDetailModel> call, Response<AddToCartDetailModel> response) {
+                 utils.progressHide();
+ 
+-                try{
+-                    AddToCartDetailModel apiResponse= response.body();
+-                    if (apiResponse!=null){
+-                        Log.e(TAG, "onResponse:  addToCart "+apiResponse );
+-                        if (context instanceof MyCartActivity){
+-                            ((MyCartActivity)context).apiResponse(apiResponse);
++                try {
++                    AddToCartDetailModel apiResponse = response.body();
++                    if (apiResponse != null) {
++                        Log.e(TAG, "onResponse:  addToCart " + apiResponse);
++                        if (context instanceof MyCartActivity) {
++                            ((MyCartActivity) context).apiResponse(apiResponse);
+                         }
+-                    }else {
++                    } else {
+                         utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                     }
+-                }catch (Exception e){
+-                    Log.e(TAG, "addToCart: Exception "+e );
++                } catch (Exception e) {
++                    Log.e(TAG, "addToCart: Exception " + e);
+                 }
+ 
+             }
+ 
+             @Override
+-            public void onFailure(Call<AddToCartDetailModel>call, Throwable t) {
++            public void onFailure(Call<AddToCartDetailModel> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+@@ -314,35 +305,32 @@ public class Api {
+         });
+     }
+ 
+-    public void cartAll(int quoteId ){
++    public void cartAll(int quoteId) {
+         utils.progressShow();
+         Call<AddToCartDetailModel> call = apiService.cartAll(quoteId);
+         call.enqueue(new Callback<AddToCartDetailModel>() {
+             @Override
+-            public void onResponse(Call<AddToCartDetailModel>call, Response<AddToCartDetailModel> response) {
+-                utils.progressHide();
+-                AddToCartDetailModel apiResponse= response.body();
+-                if (apiResponse!=null){
+-                    Log.e(TAG, "onResponse:  addToCart "+apiResponse );
+-                    if (context instanceof MyCartActivity){
+-                        ((MyCartActivity)context).apiResponse(apiResponse);
+-                    }else if (context instanceof DeliveryActivity){
+-                        ((DeliveryActivity)context).apiResponse(apiResponse);
+-                    }else if (context instanceof ProductFullViewActivity){
+-                        ((ProductFullViewActivity)context).apiCartReadResponse(apiResponse);
++            public void onResponse(Call<AddToCartDetailModel> call, Response<AddToCartDetailModel> response) {
++                utils.progressHide();
++                AddToCartDetailModel apiResponse = response.body();
++                if (apiResponse != null) {
++                    Log.e(TAG, "onResponse:  addToCart " + apiResponse);
++                    if (context instanceof MyCartActivity) {
++                        ((MyCartActivity) context).apiResponse(apiResponse);
++                    } else if (context instanceof DeliveryActivity) {
++                        ((DeliveryActivity) context).apiResponse(apiResponse);
++                    } else if (context instanceof ProductFullViewActivity) {
++                        ((ProductFullViewActivity) context).apiCartReadResponse(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+-
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<AddToCartDetailModel>call, Throwable t) {
++            public void onFailure(Call<AddToCartDetailModel> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+@@ -350,129 +338,123 @@ public class Api {
+         });
+     }
+ 
+-    public void cartDelete(JsonObject jsonObject){
++    public void cartDelete(JsonObject jsonObject) {
+         utils.progressShow();
+         Call<AddToCartDetailModel> call = apiService.cartDelete(jsonObject);
+         call.enqueue(new Callback<AddToCartDetailModel>() {
+             @Override
+-            public void onResponse(Call<AddToCartDetailModel>call, Response<AddToCartDetailModel> response) {
++            public void onResponse(Call<AddToCartDetailModel> call, Response<AddToCartDetailModel> response) {
+                 utils.progressHide();
+-                AddToCartDetailModel apiResponse= response.body();
+-                if (apiResponse!=null){
+-                    Log.e(TAG, "onResponse:  addToCart "+apiResponse );
+-                    if (context instanceof MyCartActivity){
+-                        ((MyCartActivity)context).apiResponse(apiResponse);
+-                    }else if (context instanceof DeliveryActivity){
+-                        ((DeliveryActivity)context).apiResponse(apiResponse);
++                AddToCartDetailModel apiResponse = response.body();
++                if (apiResponse != null) {
++                    Log.e(TAG, "onResponse:  addToCart " + apiResponse);
++                    if (context instanceof MyCartActivity) {
++                        ((MyCartActivity) context).apiResponse(apiResponse);
++                    } else if (context instanceof DeliveryActivity) {
++                        ((DeliveryActivity) context).apiResponse(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+-
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<AddToCartDetailModel>call, Throwable t) {
++            public void onFailure(Call<AddToCartDetailModel> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+             }
+         });
+     }
+-    public void orders(int cusId){
++
++    public void orders(int cusId) {
+         utils.progressShow();
+-        Log.e(TAG, "orders: cusId "+cusId );
++        Log.e(TAG, "orders: cusId " + cusId);
+         Call<List<OrdersModel>> call = apiService.orders(cusId);
+         call.enqueue(new Callback<List<OrdersModel>>() {
+             @Override
+-            public void onResponse(Call<List<OrdersModel>>call, Response<List<OrdersModel>> response) {
++            public void onResponse(Call<List<OrdersModel>> call, Response<List<OrdersModel>> response) {
+                 utils.progressHide();
+-                List<OrdersModel> apiResponse= response.body();
+-                if (apiResponse!=null){
+-                    Log.e(TAG, "onResponse:  orders "+apiResponse );
+-                    if (context instanceof MyOrdersActivity){
+-                        ((MyOrdersActivity)context).apiResponse(apiResponse);
++                List<OrdersModel> apiResponse = response.body();
++                if (apiResponse != null) {
++                    Log.e(TAG, "onResponse:  orders " + apiResponse);
++                    if (context instanceof MyOrdersActivity) {
++                        ((MyOrdersActivity) context).apiResponse(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+-
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<List<OrdersModel>>call, Throwable t) {
++            public void onFailure(Call<List<OrdersModel>> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+             }
+         });
+     }
+-    public void ordersDetails(int orderId){
++
++    public void ordersDetails(int orderId) {
+         utils.progressShow();
+-        Log.e(TAG, "ordersDetails: orderId "+orderId );
++        Log.e(TAG, "ordersDetails: orderId " + orderId);
+         Call<OrdersModel> call = apiService.ordersDetails(orderId);
+         call.enqueue(new Callback<OrdersModel>() {
+             @Override
+-            public void onResponse(Call<OrdersModel>call, Response<OrdersModel> response) {
++            public void onResponse(Call<OrdersModel> call, Response<OrdersModel> response) {
+                 utils.progressHide();
+-                OrdersModel apiResponse= response.body();
+-                if (apiResponse!=null){
+-                    Log.e(TAG, "onResponse:  orders "+apiResponse );
+-                    if (context instanceof MyOrdersDetailsActivity){
+-                        ((MyOrdersDetailsActivity)context).apiResponse(apiResponse);
++                OrdersModel apiResponse = response.body();
++                if (apiResponse != null) {
++                    Log.e(TAG, "onResponse:  orders " + apiResponse);
++                    if (context instanceof MyOrdersDetailsActivity) {
++                        ((MyOrdersDetailsActivity) context).apiResponse(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+-
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<OrdersModel>call, Throwable t) {
++            public void onFailure(Call<OrdersModel> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+             }
+         });
+     }
+-    public void signIn(JsonObject jsonObject){
++
++    public void signIn(JsonObject jsonObject) {
+         utils.progressShow();
+ 
+         Call<SignInModel> call = apiService.signIn(jsonObject);
+         call.enqueue(new Callback<SignInModel>() {
+             @Override
+-            public void onResponse(Call<SignInModel>call, Response<SignInModel> response) {
++            public void onResponse(Call<SignInModel> call, Response<SignInModel> response) {
+                 utils.progressHide();
+-                SignInModel apiResponse= response.body();
+-                if (apiResponse!=null){
+-                    Log.e(TAG, "onResponse:  signIn "+apiResponse.getMessage() );
+-                    if (context instanceof SignInActivity){
+-                        ((SignInActivity)context).apiResponse(apiResponse);
++                SignInModel apiResponse = response.body();
++                if (apiResponse != null) {
++                    Log.e(TAG, "" + apiResponse.toString());
++                    Log.e(TAG, "onResponse:  signIn0 " + apiResponse.getMessage());
++                    if (context instanceof SignInActivity) {
++                        Log.e(TAG, "onResponse:00  signIn OK");
++                        ((SignInActivity) context).apiResponse(apiResponse);
+                     }
+-                }else {
++                } else {
++                    Log.e(TAG, "onResponse:5  WENT WRONG");
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+-
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<SignInModel>call, Throwable t) {
++            public void onFailure(Call<SignInModel> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+@@ -482,35 +464,35 @@ public class Api {
+ 
+     }
+ 
+-    public void signUp(JsonObject jsonObject){
++    public void signUp(JsonObject jsonObject) {
+         utils.progressShow();
+-        Log.e(TAG, "signUp: jsonObject "+jsonObject );
++        Log.e(TAG, "signUp: jsonObject " + jsonObject);
+         Call<SignInModel> call = apiService.signUp(jsonObject);
+         call.enqueue(new Callback<SignInModel>() {
+             @Override
+-            public void onResponse(Call<SignInModel>call, Response<SignInModel> response) {
++            public void onResponse(Call<SignInModel> call, Response<SignInModel> response) {
+                 utils.progressHide();
+-                Log.e(TAG, "onResponse: cal "+response.body() );
+-                SignInModel apiResponse= response.body();
++                Log.e(TAG, "onResponse: cal " + response.body());
++                SignInModel apiResponse = response.body();
+                 try {
+-                    if (apiResponse!=null){
+-                        Log.e(TAG, "onResponse:  apiResponse "+apiResponse );
+-                        Log.e(TAG, "onResponse:  Message "+apiResponse.getMessage() );
+-                        if (context instanceof SignUpActivity){
+-                            ((SignUpActivity)context).apiResponse(apiResponse);
++                    if (apiResponse != null) {
++                        Log.e(TAG, "onResponse:  apiResponse " + apiResponse);
++                        Log.e(TAG, "onResponse:  Message " + apiResponse.getMessage());
++                        if (context instanceof SignUpActivity) {
++                            ((SignUpActivity) context).apiResponse(apiResponse);
+                         }
+-                    }else {
++                    } else {
+                         utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                     }
+-                }catch (Exception e){
+-                    Log.e(TAG, "signUp: Exception "+e );
++                } catch (Exception e) {
++                    Log.e(TAG, "signUp: Exception " + e);
+                 }
+ 
+ 
+             }
+ 
+             @Override
+-            public void onFailure(Call<SignInModel>call, Throwable t) {
++            public void onFailure(Call<SignInModel> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+@@ -520,34 +502,31 @@ public class Api {
+ 
+     }
+ 
+-    public void addressAdd(JsonObject jsonObject){
++    public void addressAdd(JsonObject jsonObject) {
+         utils.progressShow();
+-        Log.e(TAG, "addressAdd: jsonObject "+jsonObject );
++        Log.e(TAG, "addressAdd: jsonObject " + jsonObject);
+         Call<AddressModel> call = apiService.addressAdd(jsonObject);
+         call.enqueue(new Callback<AddressModel>() {
+             @Override
+-            public void onResponse(Call<AddressModel>call, Response<AddressModel> response) {
++            public void onResponse(Call<AddressModel> call, Response<AddressModel> response) {
+                 utils.progressHide();
+-                AddressModel apiResponse= response.body();
+-                if (apiResponse!=null){
+-                    Log.e(TAG, "onResponse:  addressAdd "+apiResponse );
+-                    if (context instanceof SelectAddressActivity){
+-                        ((SelectAddressActivity)context).apiResponseAddAdress(apiResponse);
++                AddressModel apiResponse = response.body();
++                if (apiResponse != null) {
++                    Log.e(TAG, "onResponse:  addressAdd " + apiResponse);
++                    if (context instanceof SelectAddressActivity) {
++                        ((SelectAddressActivity) context).apiResponseAddAdress(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+-
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<AddressModel>call, Throwable t) {
++            public void onFailure(Call<AddressModel> call, Throwable t) {
+                 // Log error here since request failed
+-                Log.e(TAG, "onFailure "+t.toString());
++                Log.e(TAG, "onFailure " + t.toString());
+                 utils.progressHide();
+             }
+         });
+@@ -555,30 +534,30 @@ public class Api {
+ 
+     }
+ 
+-    public void addressSingleUser(int cusId){
++    public void addressSingleUser(int cusId) {
+         utils.progressShow();
+-        Log.w(TAG, "addressList: cusId "+cusId );
++        Log.w(TAG, "addressList: cusId " + cusId);
+         Call<List<AddressSingleUserModel>> call = apiService.addressSingleUserList(cusId);
+         call.enqueue(new Callback<List<AddressSingleUserModel>>() {
+             @Override
+-            public void onResponse(Call<List<AddressSingleUserModel>>call, Response<List<AddressSingleUserModel>> response) {
++            public void onResponse(Call<List<AddressSingleUserModel>> call, Response<List<AddressSingleUserModel>> response) {
+                 utils.progressHide();
+-                List<AddressSingleUserModel> apiResponse= response.body();
+-                if (apiResponse!=null){
+-                    Log.e(TAG, "onResponse:  AddressListModel "+apiResponse );
+-                    if (context instanceof SelectAddressActivity){
+-                        ((SelectAddressActivity)context).apiResponseAdressList(apiResponse);
+-                    }else if (context instanceof ProductFullViewActivity){
+-                        ((ProductFullViewActivity)context).apiResponseAdressList(apiResponse);
++                List<AddressSingleUserModel> apiResponse = response.body();
++                if (apiResponse != null) {
++                    Log.e(TAG, "onResponse:  AddressListModel " + apiResponse);
++                    if (context instanceof SelectAddressActivity) {
++                        ((SelectAddressActivity) context).apiResponseAdressList(apiResponse);
++                    } else if (context instanceof ProductFullViewActivity) {
++                        ((ProductFullViewActivity) context).apiResponseAdressList(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+             }
+ 
+             @Override
+-            public void onFailure(Call<List<AddressSingleUserModel>>call, Throwable t) {
++            public void onFailure(Call<List<AddressSingleUserModel>> call, Throwable t) {
+                 // Log error here since request failed
+                 Log.e(TAG, t.toString());
+                 utils.progressHide();
+@@ -587,34 +566,32 @@ public class Api {
+ 
+ 
+     }
+-    public void placeOrder(int quoteid){
++
++    public void placeOrder(int quoteid) {
+         utils.progressShow();
+-        Log.e(TAG, "placeOrder: quoteid "+quoteid );
++        Log.e(TAG, "placeOrder: quoteid " + quoteid);
+         Call<PlaceOrderModel> call = apiService.placeOrder(quoteid);
+         call.enqueue(new Callback<PlaceOrderModel>() {
+             @Override
+-            public void onResponse(Call<PlaceOrderModel>call, Response<PlaceOrderModel> response) {
++            public void onResponse(Call<PlaceOrderModel> call, Response<PlaceOrderModel> response) {
+                 utils.progressHide();
+-                PlaceOrderModel apiResponse= response.body();
+-                if (apiResponse!=null){
+-                    Log.e(TAG, "onResponse:  signIn "+apiResponse );
+-                    if (context instanceof DeliveryActivity){
+-                        ((DeliveryActivity)context).apiResponsePlaceOrder(apiResponse);
++                PlaceOrderModel apiResponse = response.body();
++                if (apiResponse != null) {
++                    Log.e(TAG, "onResponse:  signIn " + apiResponse);
++                    if (context instanceof DeliveryActivity) {
++                        ((DeliveryActivity) context).apiResponsePlaceOrder(apiResponse);
+                     }
+-                }else {
++                } else {
+                     utils.showMessage(context.getResources().getString(R.string.no_response), (Activity) context);
+                 }
+ 
+ 
+-
+-
+-
+             }
+ 
+             @Override
+-            public void onFailure(Call<PlaceOrderModel>call, Throwable t) {
++            public void onFailure(Call<PlaceOrderModel> call, Throwable t) {
+                 // Log error here since request failed
+-                Log.e(TAG, "onFailure "+t.toString());
++                Log.e(TAG, "onFailure " + t.toString());
+                 utils.progressHide();
+             }
+         });
+diff --git a/app/src/main/res/layout/activity_filter_full_view.xml b/app/src/main/res/layout/activity_filter_full_view.xml
+index adb200a..ccd2ef2 100644
+--- a/app/src/main/res/layout/activity_filter_full_view.xml
++++ b/app/src/main/res/layout/activity_filter_full_view.xml
+@@ -39,7 +39,8 @@
+                         android:layout_height="@dimen/_30sdp"
+                         android:layout_alignParentRight="true"
+                         android:layout_marginRight="@dimen/_10sdp"
+-                        android:background="@drawable/fav_select" />
++                        android:background="@drawable/fav_select"
++                        android:visibility="invisible"/>
+ 
+                     <ImageView
+                         android:id="@+id/filter_full_view"
+diff --git a/app/src/main/res/layout/activity_lotion_oils.xml b/app/src/main/res/layout/activity_lotion_oils.xml
+index 8e97722..d7db9bb 100644
+--- a/app/src/main/res/layout/activity_lotion_oils.xml
++++ b/app/src/main/res/layout/activity_lotion_oils.xml
+@@ -47,6 +47,7 @@
+         android:layout_height="match_parent">
+     </FrameLayout>
+     <RelativeLayout
++        android:visibility="gone"
+         android:id="@+id/lotion_lay_filter"
+         android:layout_marginTop="@dimen/_5sdp"
+         android:layout_below="@+id/lotion_lay_shop"
+diff --git a/app/src/main/res/layout/activity_place_order_successful.xml b/app/src/main/res/layout/activity_place_order_successful.xml
+index b42b88f..2b56f1f 100644
+--- a/app/src/main/res/layout/activity_place_order_successful.xml
++++ b/app/src/main/res/layout/activity_place_order_successful.xml
+@@ -1,9 +1,36 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     tools:context=".PlaceOrderSuccessful">
+ 
+-</android.support.constraint.ConstraintLayout>
+\ No newline at end of file
++    <RelativeLayout
++        android:background="@drawable/app_bg"
++        android:alpha="0.3"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent">
++
++    </RelativeLayout>
++
++
++    <ImageView
++        android:id="@+id/success"
++
++        android:layout_centerInParent="true"
++        android:background="@drawable/tick"
++        android:layout_width="@dimen/_210sdp"
++        android:layout_height="@dimen/_110sdp" />
++    <TextView
++        android:id="@+id/signup_tv_or"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_below="@+id/success"
++        android:textAlignment="center"
++        android:layout_marginTop="@dimen/_10sdp"
++        android:textColor="@color/black"
++        android:layout_marginLeft="@dimen/_80sdp"
++        android:layout_toRightOf="@+id/signup_view_left"
++        android:text="@string/placed_successful" />
++</RelativeLayout>
+\ No newline at end of file
+diff --git a/app/src/main/res/layout/activity_resetpassword.xml b/app/src/main/res/layout/activity_resetpassword.xml
+index 83495d0..adabf7c 100644
+--- a/app/src/main/res/layout/activity_resetpassword.xml
++++ b/app/src/main/res/layout/activity_resetpassword.xml
+@@ -77,6 +77,7 @@ tools:context=".activity.register.Resetpassword">
+             android:layout_marginTop="@dimen/_3sdp"
+             app:hintAnimationEnabled="false"
+             app:hintEnabled="false"
++            app:passwordToggleEnabled="true"
+             >
+ 
+             <EditText
+diff --git a/app/src/main/res/layout/custom_toolbar.xml b/app/src/main/res/layout/custom_toolbar.xml
+index bf350b9..4f67e84 100644
+--- a/app/src/main/res/layout/custom_toolbar.xml
++++ b/app/src/main/res/layout/custom_toolbar.xml
+@@ -74,7 +74,7 @@
+             android:background="@drawable/cart" />
+         <RelativeLayout
+             android:id="@+id/toolbar_lay_cart"
+-            android:visibility="gone"
++            android:visibility="visible"
+             android:layout_marginTop="2dp"
+             android:layout_marginRight="@dimen/_3sdp"
+             android:layout_alignParentRight="true"
+diff --git a/app/src/main/res/layout/lotion_adap_list.xml b/app/src/main/res/layout/lotion_adap_list.xml
+index 17d26cf..5093065 100644
+--- a/app/src/main/res/layout/lotion_adap_list.xml
++++ b/app/src/main/res/layout/lotion_adap_list.xml
+@@ -29,7 +29,8 @@
+                 android:layout_marginRight="@dimen/_10sdp"
+                 android:background="@drawable/fav_unselect"
+                 android:layout_width="@dimen/_25sdp"
+-                android:layout_height="@dimen/_25sdp" />
++                android:layout_height="@dimen/_25sdp"
++                android:visibility="invisible"/>
+             <TextView
+                 android:id="@+id/sub_cate_tv_title"
+                 android:layout_marginTop="@dimen/_10sdp"
+diff --git a/app/src/main/res/layout/nav_headerview.xml b/app/src/main/res/layout/nav_headerview.xml
+index dc292d4..5b9599f 100644
+--- a/app/src/main/res/layout/nav_headerview.xml
++++ b/app/src/main/res/layout/nav_headerview.xml
+@@ -35,6 +35,7 @@
+             android:layout_height="wrap_content" />
+ 
+         <TextView
++            android:visibility="gone"
+             android:id="@+id/user_tv_mobile"
+             android:layout_centerHorizontal="true"
+             android:layout_marginTop="@dimen/_5sdp"
+diff --git a/app/src/main/res/menu/activity_main2_drawer.xml b/app/src/main/res/menu/activity_main2_drawer.xml
+index b5525aa..123e792 100644
+--- a/app/src/main/res/menu/activity_main2_drawer.xml
++++ b/app/src/main/res/menu/activity_main2_drawer.xml
+@@ -7,7 +7,7 @@
+         <item
+             android:id="@+id/nav_my_order"
+ 
+-            android:title="View my Orders" />
++            android:title="View My Orders" />
+         <item
+             android:id="@+id/nav_my_addre"
+ 
+@@ -15,7 +15,7 @@
+         <item
+             android:id="@+id/nav_mywishlist"
+ 
+-            android:title="My WishList" />
++            android:title="My Cart" />
+         <item
+             android:id="@+id/nav_logout"
+ 
+diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
+index f0c3474..d06c802 100644
+--- a/app/src/main/res/values/strings.xml
++++ b/app/src/main/res/values/strings.xml
+@@ -112,5 +112,7 @@
+     <string name="new_password">New Password</string>
+     <string name="reenter_password">Re enter Password</string>
+     <string name="reset_successful">Your Password has been reset successfully..!</string>
++    <!--placeordersuccessfully-->
++    <string name="placed_successful">Order Placed Successfully..!</string>
+ 
+ </resources>

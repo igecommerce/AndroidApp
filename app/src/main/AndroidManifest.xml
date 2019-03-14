@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="kite.amibee.com.netstore">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".MyApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/logo"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.register.SignInActivity" />
+        <activity
+            android:name=".activity.home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".activity.register.SignUpActivity" />
+        <activity android:name=".BabyCareActivity" />
+        <activity android:name=".activity.product.ProductListActivity"></activity>
+        <activity android:name=".activity.product.ProductFullViewActivity" />
+        <activity android:name=".BgCornerActivity" />
+        <activity android:name=".activity.addToCart.MyCartActivity" />
+        <activity android:name=".activity.delivery.DeliveryActivity" />
+        <activity android:name=".SelectAddressActivity" />
+        <activity android:name=".activity.orders.MyOrdersActivity" />
+        <activity android:name=".activity.orders.MyOrdersDetailsActivity" />
+        <activity android:name=".MyWishListActivity" />
+        <activity android:name=".MyAccountActivity" />
+        <activity
+            android:name=".Main2Activity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.category.ShopByCateActivity" />
+        <activity android:name=".DropDownActivity" />
+        <activity android:name=".LayoutWidthHeightActivity" />
+        <activity android:name=".MultiViewActivity" />
+        <activity android:name=".PaymentActivity" />
+        <activity android:name=".activity.register.Forgot_password" />
+        <activity android:name=".activity.register.Validate_otp" />
+        <activity android:name=".activity.register.Resetpassword" />
+        <!-- <activity android:name=".activity.register.Passwordreset" /> -->
+        <activity android:name=".activity.register.Passwordreset_splash" />
+        <activity android:name=".OrderPlacedSuccessful"></activity>
+    </application>
+
+</manifest>

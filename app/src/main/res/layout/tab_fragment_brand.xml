@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/search_brand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.SearchView>
+
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/lotion_rv_brand"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_below="@+id/search_brand"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_150sdp">
+
+    </android.support.v7.widget.RecyclerView>
+    <include
+        android:id="@+id/bot"
+        layout="@layout/bottom_filter_layout"
+        android:layout_below="@+id/lotion_rv_brand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

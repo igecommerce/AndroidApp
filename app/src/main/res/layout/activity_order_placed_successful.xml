@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OrderPlacedSuccessful">
+
+    <RelativeLayout
+        android:background="@drawable/app_bg"
+        android:alpha="0.3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/success"
+
+        android:layout_centerInParent="true"
+        android:background="@drawable/thumb"
+        android:layout_width="@dimen/_120sdp"
+        android:layout_height="@dimen/_120sdp" />
+    <TextView
+        android:id="@+id/signup_tv_or"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/success"
+        android:textAlignment="center"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="@dimen/_80sdp"
+        android:layout_toRightOf="@+id/signup_view_left"
+        android:text="@string/order_placed"
+        android:textSize="@dimen/_12sdp"/>
+</RelativeLayout>
